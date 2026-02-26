@@ -1,0 +1,307 @@
+<!DOCTYPE html><html>
+<head><title>PRINT PORTAL ADMIN</title><meta name="viewport" content="width=device-width"><style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#eef2f7;
+}
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+font-size:26px;
+text-align:center;
+}
+
+.box{
+background:white;
+width:95%;
+max-width:1000px;
+margin:20px auto;
+padding:15px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
+}
+
+.line{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
+}
+
+input{
+padding:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+padding:8px 15px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.blue{
+background:#0077cc;
+color:white;
+}
+
+.green{
+background:green;
+color:white;
+}
+
+.red{
+background:red;
+color:white;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:8px;
+border:1px solid #ccc;
+text-align:center;
+}
+
+</style></head><body><script>
+
+if(localStorage.login!="admin"){
+window.location="index.html";
+}
+
+</script><div class="header">
+PRINT PORTAL ADMIN PANEL
+</div><div class="box"><h3>Create Seller</h3><div class="line"><input id="u" placeholder="Username"><input id="p" placeholder="Password"><input id="exp" type="date"><button class="blue" onclick="addSeller()">
+Add Seller
+</button></div></div><div class="box"><h3>Seller Database</h3><table><tr><th>No</th>
+<th>User</th>
+<th>Status</th>
+<th>Start</th>
+<th>Expiry</th>
+<th>PDF</th>
+<th>Action</th></tr><tbody id="list"></tbody></table></div><div class="box"><h3>Change Admin Login</h3><input id="oldpass" type="password" placeholder="Old Password"><input id="newuser" placeholder="New Username"><input id="newpass" type="password" placeholder="New Password"><input id="confpass" type="password" placeholder="Confirm Password"><br><br>
+
+<button class="blue" onclick="changeAdmin()">
+Update Admin Login
+</button></div><div class="box"><a href="aadhar.html"><button class="blue">
+Open Aadhaar Editor
+</button></a><button class="red" onclick="logout()">
+Logout
+</button></div><script>
+
+
+
+function load(){
+
+let sellers=JSON.parse(localStorage.sellers||"[]");
+
+list.innerHTML="";
+
+let n=1;
+
+sellers.forEach((s,i)=>{
+
+let today=new Date().toISOString().split("T")[0];
+
+let active=s.active;
+
+if(s.expiry && today>s.expiry){
+active=false;
+}
+
+let status=active
+? "<button class='green'>Active</button>"
+: "<button class='red'>Inactive</button>";
+
+list.innerHTML+=`
+
+<tr>
+
+<td>${n++}</td>
+
+<td>${s.user}</td>
+
+<td>${status}</td>
+
+<td>${s.start}</td>
+
+<td>${s.expiry||"-"}</td>
+
+<td>${s.pdf||0}</td>
+
+<td>
+
+<button onclick="toggle(${i})">
+On/Off
+</button>
+
+<button onclick="resetPass(${i})">
+Reset
+</button>
+
+<button onclick="del(${i})">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+load();
+
+
+
+function addSeller(){
+
+let sellers=JSON.parse(localStorage.sellers||"[]");
+
+let today=new Date().toISOString().split("T")[0];
+
+sellers.push({
+
+user:u.value,
+pass:p.value,
+active:true,
+start:today,
+expiry:exp.value,
+pdf:0,
+reset:false
+
+});
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+load();
+
+}
+
+
+
+function toggle(i){
+
+let sellers=JSON.parse(localStorage.sellers);
+
+sellers[i].active=!sellers[i].active;
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+load();
+
+}
+
+
+
+function resetPass(i){
+
+let sellers=JSON.parse(localStorage.sellers);
+
+sellers[i].pass="123456";
+
+sellers[i].reset=true;
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+alert("Password Reset = 123456");
+
+load();
+
+}
+
+
+
+function del(i){
+
+let sellers=JSON.parse(localStorage.sellers);
+
+sellers.splice(i,1);
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+load();
+
+}
+
+
+
+/* ADMIN LOGIN CHANGE */
+
+function changeAdmin(){
+
+let oldp=document.getElementById("oldpass").value;
+
+let newu=document.getElementById("newuser").value;
+
+let newp=document.getElementById("newpass").value;
+
+let conf=document.getElementById("confpass").value;
+
+
+
+if(oldp!=localStorage.adminPass){
+
+alert("Wrong Old Password");
+
+return;
+
+}
+
+
+
+if(newp.length<6 || newp.length>15){
+
+alert("Password must be 6-15 characters");
+
+return;
+
+}
+
+
+
+if(newp!=conf){
+
+alert("Password Not Match");
+
+return;
+
+}
+
+
+
+localStorage.admin=newu;
+
+localStorage.adminPass=newp;
+
+alert("Admin Login Updated");
+
+}
+
+
+
+function logout(){
+
+localStorage.removeItem("login");
+
+window.location="index.html";
+
+}
+
+</script></body>
+</html>

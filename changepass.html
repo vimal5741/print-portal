@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><head><title>Change Password</title><meta name="viewport" content="width=device-width"><style>
+
+body{
+
+font-family:Arial;
+
+background:#f0f4f8;
+
+text-align:center;
+
+}
+
+
+.box{
+
+background:white;
+
+width:350px;
+
+margin:150px auto;
+
+padding:25px;
+
+border-radius:10px;
+
+box-shadow:0px 0px 10px gray;
+
+}
+
+
+input{
+
+width:90%;
+
+padding:10px;
+
+margin:10px;
+
+font-size:16px;
+
+}
+
+
+button{
+
+padding:10px 20px;
+
+background:#003366;
+
+color:white;
+
+border:none;
+
+}
+
+
+</style></head><body><div class="box"><h3>Change Password</h3><input id="p1"
+
+type="password"
+
+placeholder="New Password">
+
+<input id="p2"
+
+type="password"
+
+placeholder="Confirm Password">
+
+<br><button onclick="savePass()">Save Password
+
+</button></div><script>
+
+
+function savePass(){
+
+
+let p1=document.getElementById("p1").value;
+
+let p2=document.getElementById("p2").value;
+
+
+
+if(p1.length<6 || p1.length>15){
+
+alert("Password must be 6-15 characters");
+
+return;
+
+}
+
+
+if(p1!=p2){
+
+alert("Password Not Match");
+
+return;
+
+}
+
+
+
+let sellers=
+JSON.parse(localStorage.sellers);
+
+
+let user=
+localStorage.currentSeller;
+
+
+for(let s of sellers){
+
+if(s.user==user){
+
+s.pass=p1;
+
+s.reset=false;
+
+}
+
+}
+
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+
+alert("Password Changed");
+
+
+window.location="seller.html";
+
+
+}
+
+
+</script></body></html>

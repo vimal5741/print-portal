@@ -1,0 +1,451 @@
+<!DOCTYPE html><html><head><title>PRINT PORTAL Aadhaar Editor</title><meta name="viewport" content="width=device-width"><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><style>
+
+body{
+font-family:Arial;
+background:#e6e6e6;
+text-align:center;
+margin:0;
+}
+
+
+/* HEADER */
+
+.header{
+
+background:#003366;
+color:white;
+padding:12px;
+font-size:22px;
+font-weight:bold;
+
+}
+
+
+.backBtn{
+
+position:absolute;
+left:10px;
+top:10px;
+padding:6px 12px;
+background:white;
+color:#003366;
+border:none;
+cursor:pointer;
+
+}
+
+
+/* PANEL */
+
+.panel{
+
+background:white;
+width:420px;
+margin:20px auto;
+padding:15px;
+border-radius:10px;
+box-shadow:0px 0px 15px gray;
+
+}
+
+
+label{
+display:block;
+text-align:left;
+margin-left:10px;
+font-size:13px;
+font-weight:bold;
+}
+
+
+input,select,textarea{
+
+width:95%;
+padding:7px;
+margin:5px;
+border:1px solid #aaa;
+border-radius:5px;
+font-size:14px;
+
+}
+
+
+textarea{
+height:60px;
+}
+
+
+/* BUTTON */
+
+button{
+
+padding:10px 18px;
+margin:6px;
+background:#003366;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+
+}
+
+
+/* CARD */
+
+.card{
+
+width:171.2mm;
+height:54mm;
+margin:20px auto;
+position:relative;
+overflow:hidden;
+
+}
+
+
+/* BACKGROUND */
+
+.bg{
+position:absolute;
+width:100%;
+height:100%;
+left:0;
+top:0;
+z-index:1;
+}
+
+
+/* WHITE BOX */
+
+.box{position:absolute;top:12mm;left:28mm;width:32mm;height:10mm;background:white;z-index:2;}
+.box2{position:absolute;top:11mm;left:5mm;width:2.5mm;height:26.7mm;background:white;z-index:2;}
+.box3{position:absolute;top:44mm;left:17mm;width:40mm;height:5mm;background:white;z-index:2;}
+.box4{position:absolute;top:10mm;right:82.9mm;width:1.8mm;height:26mm;background:white;z-index:2;}
+.box5{position:absolute;top:12mm;right:38mm;width:45mm;height:10mm;background:white;z-index:2;}
+.box6{position:absolute;bottom:18.5mm;right:37.5mm;width:45mm;height:10mm;background:white;z-index:2;}
+.box7{position:absolute;bottom:4.8mm;right:20mm;width:50mm;height:7mm;background:white;z-index:2;}
+
+.box8{
+position:absolute;
+top:11mm;
+right:4.2mm;
+width:29mm;
+height:30mm;
+background:white;
+z-index:2;
+}
+
+
+/* PHOTO */
+
+.photo{
+position:absolute;
+top:12mm;
+left:8.2mm;
+width:17.5mm;
+height:21mm;
+object-fit:cover;
+z-index:3;
+}
+
+
+/* TEXT */
+
+.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+
+
+/* ADDRESS */
+
+.addrHindi{
+position:absolute;
+top:12mm;
+left:88.8mm;
+font-size:4.5pt;
+width:35mm;
+white-space:pre-line;
+line-height:8pt;
+z-index:3;
+}
+
+
+.addrEnglish{
+position:absolute;
+top:25.1mm;
+left:89mm;
+font-size:4.5pt;
+width:35mm;
+white-space:pre-line;
+line-height:8pt;
+z-index:3;
+}
+
+
+/* NUMBER */
+
+.number{
+position:absolute;
+top:45.3mm;
+left:27mm;
+font-family:"Times New Roman";
+font-size:11pt;
+font-weight:bold;
+z-index:3;
+}
+
+
+.number2{
+position:absolute;
+top:45.3mm;
+right:25.7mm;
+font-family:"Times New Roman";
+font-size:11pt;
+font-weight:bold;
+z-index:3;
+}
+
+
+/* QR */
+
+.qr{
+position:absolute;
+top:13mm;
+right:6mm;
+z-index:3;
+}
+
+</style></head><body><script>
+
+/* LOGIN PROTECTION */
+
+if(localStorage.login==null){
+
+window.location="index.html";
+
+}
+
+</script><div class="header"><button class="backBtn"
+
+onclick="goBack()">
+
+⬅ Back
+
+</button>PRINT PORTAL Aadhaar Editor
+
+</div><div class="panel"><h3>Aadhaar PVC Card Editor</h3><label>Photo</label>
+<input type="file" id="photo">
+
+<label>Name Hindi</label>
+<input type="text" id="nameHindi">
+
+<label>Name English</label>
+<input type="text" id="nameEnglish">
+
+<label>Date of Birth</label>
+<input type="date" id="dob">
+
+<label>Gender</label>
+
+<select id="gender"><option>MALE / पुरुष</option>
+<option>FEMALE / महिला</option></select><label>Address Hindi</label>
+
+<textarea id="addrHindi"></textarea><label>Address English</label>
+
+<textarea id="addrEnglish"></textarea><label>Aadhaar Number</label>
+
+<input type="text" id="aadhaar" maxlength="12"><br><button onclick="make()">
+Generate Card
+</button><button onclick="downloadPDF()">
+Download HD PDF
+</button></div><div class="card" id="card"><img class="bg"
+src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_Card_2024.png">
+
+<div class="box"></div>
+<div class="box2"></div>
+<div class="box3"></div>
+<div class="box4"></div>
+<div class="box5"></div>
+<div class="box6"></div>
+<div class="box7"></div>
+<div class="box8"></div><img id="outPhoto" class="photo"><div id="outHindi" class="hindi"></div>
+<div id="outEnglish" class="english"></div>
+<div id="outDob" class="dob"></div>
+<div id="outGender" class="gender"></div><div id="outAddrHindi" class="addrHindi"></div>
+<div id="outAddrEnglish" class="addrEnglish"></div><div id="outNumber" class="number"></div>
+<div id="outNumber2" class="number2"></div><div id="qrcode" class="qr"></div></div><script>
+
+
+var qrSize=102;
+
+
+/* BACK BUTTON */
+
+function goBack(){
+
+window.location="seller.html";
+
+}
+
+
+/* GENERATE */
+
+function make(){
+
+outHindi.innerHTML=nameHindi.value;
+
+outEnglish.innerHTML=nameEnglish.value.toUpperCase();
+
+outGender.innerHTML=gender.value;
+
+
+outAddrHindi.innerText=addrHindi.value;
+
+outAddrEnglish.innerText=addrEnglish.value.toUpperCase();
+
+
+
+let d=dob.value;
+
+let dobText="";
+let yob="";
+
+
+if(d){
+
+let p=d.split("-");
+
+dobText=p[2]+"/"+p[1]+"/"+p[0];
+
+yob=p[0];
+
+outDob.innerHTML="जन्म तिथि/DOB: "+dobText;
+
+}
+
+
+
+let num=aadhaar.value;
+
+
+if(num.length==12){
+
+num=num.substring(0,4)+" "+
+num.substring(4,8)+" "+
+num.substring(8,12);
+
+}
+
+
+outNumber.innerHTML=num;
+outNumber2.innerHTML=num;
+
+
+
+let file=photo.files[0];
+
+if(file){
+
+let r=new FileReader();
+
+r.onload=function(e){
+
+outPhoto.src=e.target.result;
+
+}
+
+r.readAsDataURL(file);
+
+}
+
+
+
+/* QR */
+
+let qrData=
+
+'<?xml version="1.0" encoding="UTF-8"?>'+
+
+'<PrintLetterBarcodeData '+
+
+'uid="'+aadhaar.value+'" '+
+
+'name="'+nameEnglish.value.toUpperCase()+'" '+
+
+'gender="'+gender.value.split(" ")[0]+'" '+
+
+'yob="'+yob+'" '+
+
+'add="'+addrEnglish.value.toUpperCase()+'" '+
+
+'dob="'+dobText+'"/>';
+
+
+document.getElementById("qrcode").innerHTML="";
+
+
+new QRCode(document.getElementById("qrcode"),{
+
+text:qrData,
+width:qrSize,
+height:qrSize,
+correctLevel:QRCode.CorrectLevel.H
+
+});
+
+
+}
+
+
+
+/* PDF DOWNLOAD + COUNT */
+
+function downloadPDF(){
+
+
+html2canvas(card,{scale:6,useCORS:true})
+
+.then(function(canvas){
+
+var img=canvas.toDataURL("image/png");
+
+var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
+
+pdf.addImage(img,'PNG',0,0,canvas.width,canvas.height);
+
+pdf.save("PRINT_PORTAL_AADHAAR.pdf");
+
+
+/* PDF COUNT */
+
+let sellers=
+JSON.parse(localStorage.sellers||"[]");
+
+let user=
+localStorage.currentSeller;
+
+
+for(let s of sellers){
+
+if(s.user==user){
+
+s.pdf=(s.pdf||0)+1;
+
+}
+
+}
+
+
+localStorage.sellers=
+JSON.stringify(sellers);
+
+
+});
+
+
+}
+
+
+</script></body>
+</html>
