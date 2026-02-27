@@ -1,307 +1,248 @@
-<!DOCTYPE html><html>
-<head><title>PRINT PORTAL ADMIN</title><meta name="viewport" content="width=device-width"><style>
+<!DOCTYPE html><html><head><title>ADMIN PANEL</title><meta name="viewport" content="width=device-width"><style>
 
 body{
 font-family:Arial;
 margin:0;
-background:#eef2f7;
+background:#e6e6e6;
+text-align:center;
 }
 
 .header{
 background:#003366;
 color:white;
 padding:15px;
-font-size:26px;
-text-align:center;
+font-size:22px;
 }
 
 .box{
+
 background:white;
-width:95%;
-max-width:1000px;
-margin:20px auto;
+width:350px;
+margin:15px auto;
 padding:15px;
 border-radius:10px;
 box-shadow:0px 0px 10px gray;
-}
 
-.line{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
 }
 
 input{
-padding:10px;
-border:1px solid #ccc;
-border-radius:5px;
+
+width:90%;
+padding:8px;
+margin:6px;
+
 }
 
 button{
-padding:8px 15px;
+
+padding:8px 18px;
+margin:5px;
+background:#003366;
+color:white;
 border:none;
-border-radius:5px;
 cursor:pointer;
-}
 
-.blue{
-background:#0077cc;
-color:white;
-}
-
-.green{
-background:green;
-color:white;
-}
-
-.red{
-background:red;
-color:white;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
+
+width:95%;
+margin:auto;
+background:white;
+
 }
 
-th,td{
+td,th{
+
 padding:8px;
-border:1px solid #ccc;
-text-align:center;
+border-bottom:1px solid gray;
+
 }
 
-</style></head><body><script>
+.green{
 
-if(localStorage.login!="admin"){
-window.location="index.html";
+background:green;
+
 }
 
-</script><div class="header">
-PRINT PORTAL ADMIN PANEL
-</div><div class="box"><h3>Create Seller</h3><div class="line"><input id="u" placeholder="Username"><input id="p" placeholder="Password"><input id="exp" type="date"><button class="blue" onclick="addSeller()">
-Add Seller
-</button></div></div><div class="box"><h3>Seller Database</h3><table><tr><th>No</th>
-<th>User</th>
-<th>Status</th>
-<th>Start</th>
-<th>Expiry</th>
-<th>PDF</th>
-<th>Action</th></tr><tbody id="list"></tbody></table></div><div class="box"><h3>Change Admin Login</h3><input id="oldpass" type="password" placeholder="Old Password"><input id="newuser" placeholder="New Username"><input id="newpass" type="password" placeholder="New Password"><input id="confpass" type="password" placeholder="Confirm Password"><br><br>
+.red{
 
-<button class="blue" onclick="changeAdmin()">
-Update Admin Login
-</button></div><div class="box"><a href="aadhar.html"><button class="blue">
-Open Aadhaar Editor
-</button></a><button class="red" onclick="logout()">
-Logout
-</button></div><script>
+background:red;
 
-
-
-function load(){
-
-let sellers=JSON.parse(localStorage.sellers||"[]");
-
-list.innerHTML="";
-
-let n=1;
-
-sellers.forEach((s,i)=>{
-
-let today=new Date().toISOString().split("T")[0];
-
-let active=s.active;
-
-if(s.expiry && today>s.expiry){
-active=false;
 }
 
-let status=active
-? "<button class='green'>Active</button>"
-: "<button class='red'>Inactive</button>";
+</style></head><body><div class="header">ADMIN PANEL
 
-list.innerHTML+=`
+</div><div class="box"><h3>Create Seller</h3><input id="user"
+placeholder="Username">
 
-<tr>
+<input id="pass"
+placeholder="Password">
 
-<td>${n++}</td>
+<input id="exp"
+type="date">
 
-<td>${s.user}</td>
+<br><button onclick="addSeller()">Create Seller
 
-<td>${status}</td>
+</button></div><table id="tbl"><tr><th>User</th><th>Password</th><th>Expiry</th><th>Status</th><th>Delete</th></tr></table><br><button onclick="logout()">Logout
 
-<td>${s.start}</td>
+</button><script type="module">
 
-<td>${s.expiry||"-"}</td>
 
-<td>${s.pdf||0}</td>
+import { initializeApp }
 
-<td>
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
-<button onclick="toggle(${i})">
-On/Off
-</button>
+import {
 
-<button onclick="resetPass(${i})">
-Reset
-</button>
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
 
-<button onclick="del(${i})">
-Delete
-</button>
+}
 
-</td>
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-</tr>
 
-`;
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+
+authDomain: "printportal-36ae0.firebaseapp.com",
+
+projectId: "printportal-36ae0",
+
+storageBucket: "printportal-36ae0.firebasestorage.app",
+
+messagingSenderId: "453235885594",
+
+appId: "1:453235885594:web:2bb8e5a2449ace9bbd33a3"
+
+};
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+
+loadSeller();
+
+
+
+async function addSeller(){
+
+
+let u=user.value;
+
+let p=pass.value;
+
+let e=exp.value;
+
+
+
+await addDoc(collection(db,"seller"),{
+
+user:u,
+
+pass:p,
+
+expiry:e,
+
+active:true
 
 });
 
+
+alert("Seller Created");
+
+
+location.reload();
+
+
 }
 
-load();
+
+
+async function loadSeller(){
+
+
+const querySnapshot=
+
+await getDocs(collection(db,"seller"));
+
+
+querySnapshot.forEach((docu)=>{
+
+
+let s=docu.data();
+
+
+let row=tbl.insertRow();
+
+
+row.insertCell(0).innerHTML=s.user;
+
+row.insertCell(1).innerHTML=s.pass;
+
+row.insertCell(2).innerHTML=s.expiry;
 
 
 
-function addSeller(){
+let st=row.insertCell(3);
 
-let sellers=JSON.parse(localStorage.sellers||"[]");
 
-let today=new Date().toISOString().split("T")[0];
+if(s.active){
 
-sellers.push({
+st.innerHTML="Active";
 
-user:u.value,
-pass:p.value,
-active:true,
-start:today,
-expiry:exp.value,
-pdf:0,
-reset:false
+st.className="green";
+
+}else{
+
+st.innerHTML="Off";
+
+st.className="red";
+
+}
+
+
+
+row.insertCell(4).innerHTML=
+
+"<button onclick='del(\""+docu.id+"\")'>Delete</button>";
+
 
 });
 
-localStorage.sellers=
-JSON.stringify(sellers);
-
-load();
 
 }
 
 
 
-function toggle(i){
+window.del=async function(id){
 
-let sellers=JSON.parse(localStorage.sellers);
+await deleteDoc(doc(db,"seller",id));
 
-sellers[i].active=!sellers[i].active;
-
-localStorage.sellers=
-JSON.stringify(sellers);
-
-load();
+location.reload();
 
 }
 
 
 
-function resetPass(i){
+window.logout=function(){
 
-let sellers=JSON.parse(localStorage.sellers);
+localStorage.clear();
 
-sellers[i].pass="123456";
-
-sellers[i].reset=true;
-
-localStorage.sellers=
-JSON.stringify(sellers);
-
-alert("Password Reset = 123456");
-
-load();
+location="index.html";
 
 }
 
 
 
-function del(i){
-
-let sellers=JSON.parse(localStorage.sellers);
-
-sellers.splice(i,1);
-
-localStorage.sellers=
-JSON.stringify(sellers);
-
-load();
-
-}
-
-
-
-/* ADMIN LOGIN CHANGE */
-
-function changeAdmin(){
-
-let oldp=document.getElementById("oldpass").value;
-
-let newu=document.getElementById("newuser").value;
-
-let newp=document.getElementById("newpass").value;
-
-let conf=document.getElementById("confpass").value;
-
-
-
-if(oldp!=localStorage.adminPass){
-
-alert("Wrong Old Password");
-
-return;
-
-}
-
-
-
-if(newp.length<6 || newp.length>15){
-
-alert("Password must be 6-15 characters");
-
-return;
-
-}
-
-
-
-if(newp!=conf){
-
-alert("Password Not Match");
-
-return;
-
-}
-
-
-
-localStorage.admin=newu;
-
-localStorage.adminPass=newp;
-
-alert("Admin Login Updated");
-
-}
-
-
-
-function logout(){
-
-localStorage.removeItem("login");
-
-window.location="index.html";
-
-}
-
-</script></body>
-</html>
+</script></body></html>
