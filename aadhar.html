@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <title>PRINT PORTAL Aadhaar Editor</title>
@@ -13,10 +12,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-
 <style>
-
-/* SAME YOUR STYLE */
 
 body{
 font-family:Arial;
@@ -24,6 +20,8 @@ background:#e6e6e6;
 text-align:center;
 margin:0;
 }
+
+/* HEADER */
 
 .header{
 background:#003366;
@@ -44,6 +42,8 @@ border:none;
 cursor:pointer;
 }
 
+/* PANEL */
+
 .panel{
 background:white;
 width:420px;
@@ -53,38 +53,7 @@ border-radius:10px;
 box-shadow:0px 0px 15px gray;
 }
 
-label{
-display:block;
-text-align:left;
-margin-left:10px;
-font-size:13px;
-font-weight:bold;
-}
-
-input,select,textarea{
-width:95%;
-padding:7px;
-margin:5px;
-border:1px solid #aaa;
-border-radius:5px;
-font-size:14px;
-}
-
-textarea{
-height:60px;
-}
-
-button{
-padding:10px 18px;
-margin:6px;
-background:#003366;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-}
-
-/* CARD */
+/* CARD SIZE ORIGINAL */
 
 .card{
 width:171.2mm;
@@ -98,6 +67,27 @@ overflow:hidden;
 position:absolute;
 width:100%;
 height:100%;
+z-index:1;
+}
+
+/* YOUR BOXES */
+
+.box{position:absolute;top:12mm;left:28mm;width:32mm;height:10mm;background:white;z-index:2;}
+.box2{position:absolute;top:11mm;left:5mm;width:2.5mm;height:26.7mm;background:white;z-index:2;}
+.box3{position:absolute;top:44mm;left:17mm;width:40mm;height:5mm;background:white;z-index:2;}
+.box4{position:absolute;top:10mm;right:82.9mm;width:1.8mm;height:26mm;background:white;z-index:2;}
+.box5{position:absolute;top:12mm;right:38mm;width:45mm;height:10mm;background:white;z-index:2;}
+.box6{position:absolute;bottom:18.5mm;right:37.5mm;width:45mm;height:10mm;background:white;z-index:2;}
+.box7{position:absolute;bottom:4.8mm;right:20mm;width:50mm;height:7mm;background:white;z-index:2;}
+
+.box8{
+position:absolute;
+top:11mm;
+right:4.2mm;
+width:29mm;
+height:30mm;
+background:white;
+z-index:2;
 }
 
 /* PHOTO */
@@ -109,14 +99,17 @@ left:8.2mm;
 width:17.5mm;
 height:21mm;
 object-fit:cover;
+z-index:3;
 }
 
 /* TEXT */
 
-.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;}
-.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;}
-.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;}
-.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;}
+.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+
+/* ADDRESS */
 
 .addrHindi{
 position:absolute;
@@ -125,39 +118,46 @@ left:88.8mm;
 font-size:4.5pt;
 width:35mm;
 white-space:pre-line;
+z-index:3;
 }
 
 .addrEnglish{
 position:absolute;
 top:25mm;
-left:88.8mm;
+left:89mm;
 font-size:4.5pt;
 width:35mm;
 white-space:pre-line;
+z-index:3;
 }
 
 /* NUMBER */
 
 .number{
 position:absolute;
-top:45mm;
+top:45.3mm;
 left:27mm;
 font-size:11pt;
 font-weight:bold;
+z-index:3;
 }
 
 .number2{
 position:absolute;
-top:45mm;
-right:27mm;
+top:45.3mm;
+right:25.7mm;
 font-size:11pt;
 font-weight:bold;
+z-index:3;
 }
+
+/* QR */
 
 .qr{
 position:absolute;
 top:13mm;
 right:6mm;
+z-index:3;
 }
 
 </style>
@@ -175,7 +175,6 @@ location="index.html";
 }
 
 </script>
-
 
 <div class="header">
 
@@ -195,47 +194,52 @@ PRINT PORTAL Aadhaar Editor
 
 <h3>Aadhaar PVC Card Editor</h3>
 
-<label>Photo</label>
-<input type="file" id="photo">
+<input type="file" id="photo"><br>
 
-<label>Name Hindi</label>
-<input id="nameHindi">
+<input id="nameHindi"><br>
 
-<label>Name English</label>
-<input id="nameEnglish">
+<input id="nameEnglish"><br>
 
-<label>Date of Birth</label>
-<input type="date" id="dob">
+<input type="date" id="dob"><br>
 
-<label>Gender</label>
 <select id="gender">
+
 <option>MALE</option>
 <option>FEMALE</option>
-</select>
 
-<label>Address Hindi</label>
-<textarea id="addrHindi"></textarea>
+</select><br>
 
-<label>Address English</label>
-<textarea id="addrEnglish"></textarea>
+<textarea id="addrHindi"></textarea><br>
 
-<label>Aadhaar Number</label>
-<input id="aadhaar" maxlength="12">
+<textarea id="addrEnglish"></textarea><br>
 
-<br>
+<input id="aadhaar" maxlength="12"><br>
 
-<button onclick="make()">Generate Card</button>
 
-<button onclick="downloadPDF()">Download HD PDF</button>
+<button onclick="make()">
+Generate Card
+</button>
+
+<button onclick="downloadPDF()">
+Download HD PDF
+</button>
 
 </div>
 
 
-
-<div id="card" class="card">
+<div class="card" id="card">
 
 <img class="bg"
 src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_Card_2024.png">
+
+<div class="box"></div>
+<div class="box2"></div>
+<div class="box3"></div>
+<div class="box4"></div>
+<div class="box5"></div>
+<div class="box6"></div>
+<div class="box7"></div>
+<div class="box8"></div>
 
 <img id="outPhoto" class="photo">
 
@@ -255,6 +259,7 @@ src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_
 </div>
 
 
+
 <script type="module">
 
 import { initializeApp }
@@ -270,12 +275,15 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
 const firebaseConfig={
+
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 authDomain:"printportal-36ae0.firebaseapp.com",
 projectId:"printportal-36ae0"
+
 };
 
 const app=initializeApp(firebaseConfig);
+
 const db=getFirestore(app);
 
 
@@ -284,11 +292,14 @@ const db=getFirestore(app);
 window.make=function(){
 
 outHindi.innerHTML=nameHindi.value;
+
 outEnglish.innerHTML=nameEnglish.value.toUpperCase();
+
 outGender.innerHTML=gender.value;
 
-outAddrHindi.innerHTML=addrHindi.value;
-outAddrEnglish.innerHTML=addrEnglish.value;
+outAddrHindi.innerText=addrHindi.value;
+
+outAddrEnglish.innerText=addrEnglish.value;
 
 let d=dob.value;
 
@@ -303,7 +314,9 @@ outDob.innerHTML=p[2]+"/"+p[1]+"/"+p[0];
 let num=aadhaar.value;
 
 outNumber.innerHTML=num;
+
 outNumber2.innerHTML=num;
+
 
 
 let file=photo.files[0];
@@ -318,19 +331,19 @@ r.readAsDataURL(file);
 
 }
 
+
+
 document.getElementById("qrcode").innerHTML="";
 
 new QRCode(qrcode,{
 
 text:nameEnglish.value,
-
-width:100,
-height:100
+width:102,
+height:102
 
 });
 
 }
-
 
 
 /* PDF */
@@ -339,18 +352,17 @@ window.downloadPDF=async function(){
 
 let name=nameEnglish.value;
 
-html2canvas(card,{scale:6})
-
-.then(async canvas=>{
+html2canvas(card,{scale:6}).then(async canvas=>{
 
 var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
 
 pdf.addImage(canvas.toDataURL(),"PNG",0,0,canvas.width,canvas.height);
 
+/* AUTO NAME */
+
 pdf.save(name+".pdf");
 
-
-/* PDF COUNT */
+/* FIREBASE COUNT */
 
 let id=localStorage.currentSeller;
 
