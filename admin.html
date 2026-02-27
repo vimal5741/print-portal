@@ -56,12 +56,13 @@ box-shadow:0px 0px 10px gray;
 border-radius:8px;
 display:none;
 width:200px;
+z-index:5;
 
 }
 
 .menu div{
 
-padding:10px;
+padding:12px;
 cursor:pointer;
 
 }
@@ -161,6 +162,16 @@ cursor:pointer;
 
 }
 
+.reset{
+
+background:orange;
+color:white;
+padding:5px 10px;
+border-radius:6px;
+cursor:pointer;
+
+}
+
 </style>
 
 </head>
@@ -184,11 +195,15 @@ onclick="menu()">
 <div class="menu" id="menu">
 
 <div onclick="changeAdmin()">
+
 Change Admin Login
+
 </div>
 
 <div onclick="logout()">
+
 Logout
+
 </div>
 
 </div>
@@ -201,9 +216,7 @@ Logout
 
 <input id="user" placeholder="Username">
 
-<input id="pass" placeholder="Password">
-
-<input id="pass2" placeholder="Confirm Password">
+<input id="pass" placeholder="Temporary Password">
 
 <input id="exp" type="date">
 
@@ -228,6 +241,7 @@ Create Seller
 <th>PDF</th>
 <th>Expiry</th>
 <th>Status</th>
+<th>Reset</th>
 <th>Delete</th>
 
 </tr>
@@ -239,16 +253,20 @@ Create Seller
 <script type="module">
 
 import { initializeApp }
+
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
+
 getFirestore,
 collection,
 addDoc,
 getDocs,
 deleteDoc,
 doc,
-updateDoc
+updateDoc,
+getDoc
+
 }
 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
@@ -264,6 +282,7 @@ authDomain:"printportal-36ae0.firebaseapp.com",
 projectId:"printportal-36ae0"
 
 };
+
 
 
 const app=initializeApp(firebaseConfig);
@@ -287,6 +306,7 @@ tbl.innerHTML=`
 <th>PDF</th>
 <th>Expiry</th>
 <th>Status</th>
+<th>Reset</th>
 <th>Delete</th>
 
 </tr>
@@ -324,7 +344,16 @@ st.innerHTML="<span class='red' onclick='toggle(\""+d.id+"\",true)'>Off</span>";
 }
 
 
+
+/* RESET PASSWORD */
+
 row.insertCell(5).innerHTML=
+
+"<span class='reset' onclick='resetPass(\""+d.id+"\")'>Reset</span>";
+
+
+
+row.insertCell(6).innerHTML=
 
 "<button onclick='del(\""+d.id+"\")'>Delete</button>";
 
@@ -342,23 +371,13 @@ let u=user.value;
 
 let p=pass.value;
 
-let p2=pass2.value;
-
 let e=exp.value;
+
 
 
 if(u==""||p==""||e==""){
 
 alert("Fill All Fields");
-
-return;
-
-}
-
-
-if(p!=p2){
-
-alert("Password Not Match");
 
 return;
 
@@ -371,12 +390,13 @@ user:u,
 pass:p,
 expiry:e,
 active:true,
-pdf:0
+pdf:0,
+temp:true
 
 });
 
 
-alert("Seller Created");
+alert("Seller Created With Temporary Password");
 
 load();
 
@@ -412,23 +432,71 @@ load();
 
 
 
+/* RESET PASSWORD */
+
+window.resetPass=async function(id){
+
+let p=prompt("Enter New Password");
+
+if(!p) return;
+
+await updateDoc(doc(db,"seller",id),{
+
+pass:p,
+temp:true
+
+});
+
+alert("Password Reset Done");
+
+load();
+
+}
+
+
+
+/* CHANGE ADMIN LOGIN */
+
+window.changeAdmin=async function(){
+
+let u=prompt("New Admin Username");
+
+let p=prompt("New Admin Password");
+
+if(!u || !p) return;
+
+
+
+await updateDoc(doc(db,"admin","login"),{
+
+user:u,
+pass:p
+
+});
+
+
+alert("Admin Login Updated");
+
+}
+
+
+
 </script>
 
 
 
 <script>
 
+
 function menu(){
 
 let m=document.getElementById("menu");
 
-if(m.style.display=="block")
+m.style.display=
 
-m.style.display="none";
+m.style.display=="block"
 
-else
-
-m.style.display="block";
+?"none":"block";
 
 }
 
@@ -444,27 +512,6 @@ location="index.html";
 
 }
 
-
-
-/* CHANGE ADMIN LOGIN */
-
-function changeAdmin(){
-
-let u=prompt("New Username");
-
-let p=prompt("New Password");
-
-if(u && p){
-
-localStorage.admin=u;
-
-localStorage.adminPass=p;
-
-alert("Admin Changed");
-
-}
-
-}
 
 </script>
 
