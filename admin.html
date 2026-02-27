@@ -3,7 +3,7 @@
 
 <head>
 
-<title>ADMIN PANEL</title>
+<title>PRINT PORTAL ADMIN</title>
 
 <meta name="viewport" content="width=device-width">
 
@@ -38,13 +38,13 @@ position:absolute;
 right:20px;
 top:10px;
 width:45px;
-height:45px;
-border-radius:50%;
 cursor:pointer;
+border-radius:50%;
+
 }
 
 
-/* DP MENU */
+/* MENU */
 
 .menu{
 
@@ -55,8 +55,7 @@ background:white;
 box-shadow:0px 0px 10px gray;
 border-radius:8px;
 display:none;
-width:180px;
-z-index:1000;
+width:200px;
 
 }
 
@@ -74,16 +73,16 @@ background:#eee;
 }
 
 
-/* CREATE BOX */
+/* BOX */
 
 .box{
 
 background:white;
-width:350px;
-margin:25px auto;
+width:360px;
+margin:20px auto;
 padding:20px;
-border-radius:12px;
-box-shadow:0px 0px 15px #bbb;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
 text-align:center;
 
 }
@@ -93,7 +92,7 @@ input{
 
 width:90%;
 padding:10px;
-margin:7px;
+margin:5px;
 border-radius:5px;
 border:1px solid gray;
 
@@ -102,7 +101,7 @@ border:1px solid gray;
 
 button{
 
-padding:10px 20px;
+padding:8px 15px;
 background:#003366;
 color:white;
 border:none;
@@ -112,11 +111,9 @@ cursor:pointer;
 }
 
 
-/* TABLE */
-
 table{
 
-width:90%;
+width:95%;
 margin:auto;
 background:white;
 border-radius:10px;
@@ -125,6 +122,7 @@ box-shadow:0px 0px 10px gray;
 
 }
 
+
 th{
 
 background:#003366;
@@ -132,6 +130,7 @@ color:white;
 padding:10px;
 
 }
+
 
 td{
 
@@ -147,8 +146,10 @@ background:green;
 color:white;
 padding:5px 10px;
 border-radius:6px;
+cursor:pointer;
 
 }
+
 
 .red{
 
@@ -156,9 +157,9 @@ background:red;
 color:white;
 padding:5px 10px;
 border-radius:6px;
+cursor:pointer;
 
 }
-
 
 </style>
 
@@ -172,17 +173,18 @@ border-radius:6px;
 
 PRINT PORTAL ADMIN
 
-<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
 class="dp"
-onclick="showMenu()">
+onclick="menu()">
 
 </div>
 
 
+
 <div class="menu" id="menu">
 
-<div onclick="changePass()">
-Change Password
+<div onclick="changeAdmin()">
+Change Admin Login
 </div>
 
 <div onclick="logout()">
@@ -201,6 +203,8 @@ Logout
 
 <input id="pass" placeholder="Password">
 
+<input id="pass2" placeholder="Confirm Password">
+
 <input id="exp" type="date">
 
 <br>
@@ -215,15 +219,13 @@ Create Seller
 
 
 
-<br>
-
-
 <table id="tbl">
 
 <tr>
 
 <th>User</th>
 <th>Password</th>
+<th>PDF</th>
 <th>Expiry</th>
 <th>Status</th>
 <th>Delete</th>
@@ -248,6 +250,7 @@ deleteDoc,
 doc,
 updateDoc
 }
+
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
@@ -258,13 +261,7 @@ apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 
 authDomain:"printportal-36ae0.firebaseapp.com",
 
-projectId:"printportal-36ae0",
-
-storageBucket:"printportal-36ae0.firebasestorage.app",
-
-messagingSenderId:"453235885594",
-
-appId:"1:453235885594:web:2bb8e5a2449ace9bbd33a3"
+projectId:"printportal-36ae0"
 
 };
 
@@ -275,9 +272,8 @@ const db=getFirestore(app);
 
 
 
-/* LOAD SELLERS */
-
 load();
+
 
 
 async function load(){
@@ -288,6 +284,7 @@ tbl.innerHTML=`
 
 <th>User</th>
 <th>Password</th>
+<th>PDF</th>
 <th>Expiry</th>
 <th>Status</th>
 <th>Delete</th>
@@ -296,11 +293,11 @@ tbl.innerHTML=`
 
 `;
 
-const querySnapshot=await getDocs(collection(db,"seller"));
+const snap=await getDocs(collection(db,"seller"));
 
-querySnapshot.forEach((docu)=>{
+snap.forEach((d)=>{
 
-let s=docu.data();
+let s=d.data();
 
 let row=tbl.insertRow();
 
@@ -308,27 +305,28 @@ row.insertCell(0).innerHTML=s.user;
 
 row.insertCell(1).innerHTML=s.pass;
 
-row.insertCell(2).innerHTML=s.expiry;
+row.insertCell(2).innerHTML=s.pdf||0;
+
+row.insertCell(3).innerHTML=s.expiry;
 
 
 
-let st=row.insertCell(3);
+let st=row.insertCell(4);
 
 if(s.active){
 
-st.innerHTML="<span class='green'>Active</span>";
+st.innerHTML="<span class='green' onclick='toggle(\""+d.id+"\",false)'>Active</span>";
 
 }else{
 
-st.innerHTML="<span class='red'>Off</span>";
+st.innerHTML="<span class='red' onclick='toggle(\""+d.id+"\",true)'>Off</span>";
 
 }
 
 
+row.insertCell(5).innerHTML=
 
-row.insertCell(4).innerHTML=
-
-"<button onclick='del(\""+docu.id+"\")'>Delete</button>";
+"<button onclick='del(\""+d.id+"\")'>Delete</button>";
 
 });
 
@@ -340,16 +338,27 @@ row.insertCell(4).innerHTML=
 
 window.createSeller=async function(){
 
-let u=document.getElementById("user").value;
+let u=user.value;
 
-let p=document.getElementById("pass").value;
+let p=pass.value;
 
-let e=document.getElementById("exp").value;
+let p2=pass2.value;
+
+let e=exp.value;
 
 
-if(u=="" || p=="" || e==""){
+if(u==""||p==""||e==""){
 
 alert("Fill All Fields");
+
+return;
+
+}
+
+
+if(p!=p2){
+
+alert("Password Not Match");
 
 return;
 
@@ -387,15 +396,29 @@ load();
 
 
 
+/* ACTIVE OFF */
+
+window.toggle=async function(id,val){
+
+await updateDoc(doc(db,"seller",id),{
+
+active:val
+
+});
+
+load();
+
+}
+
+
+
 </script>
 
 
 
 <script>
 
-/* MENU */
-
-function showMenu(){
+function menu(){
 
 let m=document.getElementById("menu");
 
@@ -422,17 +445,22 @@ location="index.html";
 }
 
 
-/* CHANGE ADMIN PASSWORD */
 
-function changePass(){
+/* CHANGE ADMIN LOGIN */
+
+function changeAdmin(){
+
+let u=prompt("New Username");
 
 let p=prompt("New Password");
 
-if(p){
+if(u && p){
+
+localStorage.admin=u;
 
 localStorage.adminPass=p;
 
-alert("Password Changed");
+alert("Admin Changed");
 
 }
 
