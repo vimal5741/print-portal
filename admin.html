@@ -8,10 +8,12 @@ text-align:center;
 }
 
 .header{
+
 background:#003366;
 color:white;
 padding:15px;
 font-size:22px;
+
 }
 
 .box{
@@ -62,48 +64,43 @@ border-bottom:1px solid gray;
 .green{
 
 background:green;
+color:white;
 
 }
 
 .red{
 
 background:red;
+color:white;
 
 }
 
-</style></head><body><div class="header">ADMIN PANEL
+</style></head><body><div class="header">PRINT PORTAL ADMIN PANEL
 
-</div><div class="box"><h3>Create Seller</h3><input id="user"
-placeholder="Username">
+</div><div class="box"><h3>Create Seller</h3><input id="user" placeholder="Username"><input id="pass" placeholder="Password"><input id="exp" type="date"><br><button onclick="createSeller()">Create Seller
 
-<input id="pass"
-placeholder="Password">
-
-<input id="exp"
-type="date">
-
-<br><button onclick="addSeller()">Create Seller
-
-</button></div><table id="tbl"><tr><th>User</th><th>Password</th><th>Expiry</th><th>Status</th><th>Delete</th></tr></table><br><button onclick="logout()">Logout
+</button></div><table id="tbl"><tr><th>User</th>
+<th>Password</th>
+<th>Expiry</th>
+<th>Status</th>
+<th>Reset</th>
+<th>Delete</th></tr></table><br><button onclick="logout()">Logout
 
 </button><script type="module">
 
 
 import { initializeApp }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
-
 getFirestore,
 collection,
 addDoc,
 getDocs,
 deleteDoc,
-doc
-
+doc,
+updateDoc
 }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
@@ -135,56 +132,50 @@ loadSeller();
 
 
 
-async function addSeller(){
-
+window.createSeller=async function(){
 
 let u=user.value;
-
 let p=pass.value;
-
 let e=exp.value;
 
+if(u=="" || p=="" || e==""){
 
+alert("Fill all fields");
+return;
+
+}
 
 await addDoc(collection(db,"seller"),{
 
 user:u,
-
 pass:p,
-
 expiry:e,
-
-active:true
+active:true,
+pdf:0
 
 });
 
-
 alert("Seller Created");
 
-
 location.reload();
-
 
 }
 
 
 
-async function loadSeller(){
+/* LOAD SELLER */
 
+async function loadSeller(){
 
 const querySnapshot=
 
 await getDocs(collection(db,"seller"));
 
-
 querySnapshot.forEach((docu)=>{
-
 
 let s=docu.data();
 
-
 let row=tbl.insertRow();
-
 
 row.insertCell(0).innerHTML=s.user;
 
@@ -196,17 +187,14 @@ row.insertCell(2).innerHTML=s.expiry;
 
 let st=row.insertCell(3);
 
-
 if(s.active){
 
 st.innerHTML="Active";
-
 st.className="green";
 
 }else{
 
 st.innerHTML="Off";
-
 st.className="red";
 
 }
@@ -215,8 +203,13 @@ st.className="red";
 
 row.insertCell(4).innerHTML=
 
-"<button onclick='del(\""+docu.id+"\")'>Delete</button>";
+"<button onclick='resetPass(\""+docu.id+"\")'>Reset</button>";
 
+
+
+row.insertCell(5).innerHTML=
+
+"<button onclick='del(\""+docu.id+"\")'>Delete</button>";
 
 });
 
@@ -224,6 +217,8 @@ row.insertCell(4).innerHTML=
 }
 
 
+
+/* DELETE */
 
 window.del=async function(id){
 
@@ -234,6 +229,26 @@ location.reload();
 }
 
 
+
+/* RESET PASSWORD */
+
+window.resetPass=async function(id){
+
+await updateDoc(doc(db,"seller",id),{
+
+pass:"123456"
+
+});
+
+alert("Password Reset = 123456");
+
+location.reload();
+
+}
+
+
+
+/* LOGOUT */
 
 window.logout=function(){
 
