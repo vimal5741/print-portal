@@ -1,314 +1,238 @@
-<!DOCTYPE html><html><head><title>SELLER DASHBOARD</title><meta name="viewport" content="width=device-width"><style>
+<script>
+if(localStorage.login!="seller"){
+location="index.html";
+}
+</script>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>SELLER DASHBOARD</title>
+
+<meta name="viewport" content="width=device-width">
+
+<style>
 
 body{
 font-family:Arial;
 margin:0;
-background:#f0f4f8;
+background:#e6e6e6;
 }
-
-
-/* HEADER */
 
 .header{
 
 background:#003366;
 color:white;
 padding:15px;
-font-size:26px;
-text-align:center;
-position:relative;
-
-}
-
-
-/* DP ICON */
-
-.dp{
-
-position:absolute;
-
-right:20px;
-top:10px;
-
-width:42px;
-height:42px;
-
-border-radius:50%;
-
-background:white;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-cursor:pointer;
-
 font-size:22px;
-
-box-shadow:0px 0px 8px black;
-
 }
-
-
-
-/* DP MENU */
 
 .menu{
 
-display:none;
-
-position:fixed;
-
+position:absolute;
 right:20px;
-
-top:70px;
-
-background:white;
-
-width:240px;
-
-border-radius:8px;
-
-box-shadow:0px 5px 20px rgba(0,0,0,.4);
-
-z-index:999999;
-
-overflow:hidden;
-
-}
-
-
-
-/* MENU ITEM */
-
-.menu div{
-
-padding:14px;
-
-border-bottom:1px solid #eee;
-
+top:15px;
 cursor:pointer;
+}
 
-font-size:16px;
+.dpMenu{
+
+display:none;
+position:absolute;
+right:20px;
+top:60px;
+background:white;
+padding:10px;
+border-radius:10px;
+box-shadow:0px 0px 10px gray;
 
 }
 
+.dpMenu button{
 
-.menu div:hover{
-
-background:#f0f4f8;
-
-}
-
-
-
-/* AREA */
-
-.area{
-
-width:900px;
-
-max-width:95%;
-
-margin:40px auto;
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:25px;
-
-justify-content:center;
+display:block;
+margin:5px;
+width:150px;
 
 }
-
-
-
-/* SERVICE BOX */
 
 .box{
 
-width:240px;
-
+width:250px;
 height:140px;
-
 background:white;
-
-border-radius:12px;
-
+margin:30px;
+display:inline-block;
+border-radius:10px;
 box-shadow:0px 0px 10px gray;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
+font-size:18px;
+padding-top:50px;
 cursor:pointer;
 
-font-size:18px;
-
-transition:.2s;
-
 }
 
+</style>
 
-.box:hover{
+</head>
 
-background:#eef2f7;
+<body>
 
-transform:scale(1.05);
+<div class="header">
 
+PRINT PORTAL SELLER
+
+<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+width="40"
+class="menu"
+onclick="showMenu()">
+
+</div>
+
+
+<div class="dpMenu" id="menu">
+
+<button onclick="changePass()">Change Password</button>
+
+<button onclick="validity()">Validity</button>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
+
+<center>
+
+<div class="box" onclick="aadhaar()">
+
+AADHAAR CARD
+
+</div>
+
+<div class="box">
+
+VOTER CARD
+
+<br>
+Coming Soon
+
+</div>
+
+<div class="box">
+
+EDHRAM CARD
+
+<br>
+Coming Soon
+
+</div>
+
+<div class="box">
+
+AYUSHMAN CARD
+
+<br>
+Coming Soon
+
+</div>
+
+</center>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import { getFirestore,
+collection,
+getDocs,
+doc,
+updateDoc
 }
 
-
-.coming{
-
-font-size:13px;
-
-color:red;
-
-margin-top:6px;
-
-}
-
-</style></head><body><script>
-
-if(localStorage.login!="seller"){
-
-window.location="index.html";
-
-}
-
-</script><div class="header">PRINT PORTAL SELLER
-
-<div class="dp"onclick="openMenu()">
-
-👤
-
-</div></div><div id="menu" class="menu"><div onclick="showInfo()">Account Info
-
-</div><div onclick="changePass()">Change Password
-
-</div><div onclick="logout()">Logout
-
-</div></div><div class="area"><div class="box"onclick="openAadhar()">
-
-Aadhaar Card
-
-</div><div class="box">Voter Card
-
-<div class="coming">Coming Soon
-
-</div></div><div class="box">E-Shram Card
-
-<div class="coming">Coming Soon
-
-</div></div><div class="box">Ayushman Card
-
-<div class="coming">Coming Soon
-
-</div></div></div><script>
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-/* MENU OPEN */
+const firebaseConfig = {
 
-function openMenu(){
+apiKey: "AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+
+authDomain: "printportal-36ae0.firebaseapp.com",
+
+projectId: "printportal-36ae0",
+
+storageBucket: "printportal-36ae0.firebasestorage.app",
+
+messagingSenderId: "453235885594",
+
+appId: "1:453235885594:web:2bb8e5a2449ace9bbd33a3"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+window.showMenu=function(){
 
 let m=document.getElementById("menu");
 
-if(m.style.display=="block"){
-
+if(m.style.display=="block")
 m.style.display="none";
-
-}else{
-
+else
 m.style.display="block";
 
 }
 
-}
 
+window.logout=function(){
 
-/* CLOSE MENU OUTSIDE CLICK */
+localStorage.clear();
 
-window.onclick=function(e){
-
-if(!e.target.closest(".dp")){
-
-document.getElementById("menu").style.display="none";
-
-}
+location="index.html";
 
 }
 
 
+window.aadhaar=function(){
 
-/* OPEN EDITOR */
-
-function openAadhar(){
-
-window.location="aadhar.html";
+location="aadhaar.html";
 
 }
 
 
+window.changePass=function(){
 
-/* ACCOUNT INFO */
+location="changepass.html";
 
-function showInfo(){
+}
 
-let sellers=
-JSON.parse(localStorage.sellers||"[]");
 
-let user=
-localStorage.currentSeller;
+window.validity=async function(){
 
-for(let s of sellers){
+let user=localStorage.currentSeller;
+
+let snap=await getDocs(collection(db,"seller"));
+
+snap.forEach(d=>{
+
+let s=d.data();
 
 if(s.user==user){
 
-alert(
-
-"User: "+s.user+
-
-"\nExpiry Date: "+s.expiry+
-
-"\nPDF Generated: "+(s.pdf||0)
-
-);
+alert("Expiry Date : "+s.expiry);
 
 }
 
-}
+});
 
 }
 
 
+</script>
 
-/* PASSWORD CHANGE PAGE */
+</body>
 
-function changePass(){
-
-window.location="changepass.html";
-
-}
-
-
-
-/* LOGOUT */
-
-function logout(){
-
-localStorage.removeItem("login");
-
-window.location="index.html";
-
-}
-
-
-</script></body></html>
+</html>
