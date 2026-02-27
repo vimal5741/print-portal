@@ -1,15 +1,9 @@
-<script>
-if(localStorage.login!="seller"){
-location="index.html";
-}
-</script>
-
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<title>SELLER DASHBOARD</title>
+<title>PRINT PORTAL SELLER</title>
 
 <meta name="viewport" content="width=device-width">
 
@@ -18,8 +12,10 @@ location="index.html";
 body{
 font-family:Arial;
 margin:0;
-background:#e6e6e6;
+background:#f5f7fa;
 }
+
+/* HEADER */
 
 .header{
 
@@ -27,49 +23,103 @@ background:#003366;
 color:white;
 padding:15px;
 font-size:22px;
+text-align:center;
+position:relative;
+
 }
+
+/* DP ICON */
+
+.dp{
+
+position:absolute;
+right:20px;
+top:10px;
+width:45px;
+cursor:pointer;
+border-radius:50%;
+
+}
+
+
+/* PROFILE MENU */
 
 .menu{
 
 position:absolute;
 right:20px;
-top:15px;
-cursor:pointer;
-}
-
-.dpMenu{
-
-display:none;
-position:absolute;
-right:20px;
-top:60px;
+top:70px;
 background:white;
-padding:10px;
+box-shadow:0px 0px 15px gray;
 border-radius:10px;
-box-shadow:0px 0px 10px gray;
+display:none;
+width:220px;
+z-index:10;
 
 }
 
-.dpMenu button{
+.menu div{
 
-display:block;
-margin:5px;
-width:150px;
+padding:12px;
+cursor:pointer;
+border-bottom:1px solid #eee;
 
 }
 
-.box{
+.menu div:hover{
 
-width:250px;
+background:#f0f0f0;
+
+}
+
+
+/* INFO BOX */
+
+.info{
+
+text-align:center;
+margin-top:20px;
+font-size:18px;
+
+}
+
+
+/* CARDS */
+
+.container{
+
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+margin-top:30px;
+
+}
+
+.card{
+
+width:260px;
 height:140px;
 background:white;
-margin:30px;
-display:inline-block;
-border-radius:10px;
-box-shadow:0px 0px 10px gray;
-font-size:18px;
-padding-top:50px;
+margin:20px;
+border-radius:12px;
+box-shadow:0px 0px 15px gray;
+text-align:center;
+padding-top:40px;
+font-size:20px;
 cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:scale(1.05);
+
+}
+
+.coming{
+
+color:red;
+font-size:14px;
 
 }
 
@@ -79,115 +129,251 @@ cursor:pointer;
 
 <body>
 
+
+
 <div class="header">
 
 PRINT PORTAL SELLER
 
 <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-width="40"
-class="menu"
-onclick="showMenu()">
+
+class="dp"
+
+onclick="menu()">
 
 </div>
 
 
-<div class="dpMenu" id="menu">
 
-<button onclick="changePass()">Change Password</button>
+<div class="menu" id="menu">
 
-<button onclick="validity()">Validity</button>
+<div onclick="changePass()">
 
-<button onclick="logout()">Logout</button>
+🔑 Change Password
+
+</div>
+
+<div id="validity">
+
+Validity
+
+</div>
+
+<div id="pdfcount">
+
+PDF Count
+
+</div>
+
+<div onclick="logout()">
+
+Logout
+
+</div>
 
 </div>
 
 
-<center>
 
-<div class="box" onclick="aadhaar()">
+<div class="info">
 
-AADHAAR CARD
+Welcome Seller
 
 </div>
 
-<div class="box">
 
-VOTER CARD
 
-<br>
+<div class="container">
+
+
+<div class="card"
+
+onclick="openAadhar()">
+
+Aadhaar Card
+
+</div>
+
+
+
+<div class="card">
+
+Voter Card
+
+<div class="coming">
+
 Coming Soon
 
 </div>
 
-<div class="box">
+</div>
 
-EDHRAM CARD
 
-<br>
+
+<div class="card">
+
+E-Shram Card
+
+<div class="coming">
+
 Coming Soon
 
 </div>
 
-<div class="box">
+</div>
 
-AYUSHMAN CARD
 
-<br>
+
+<div class="card">
+
+Ayushman Card
+
+<div class="coming">
+
 Coming Soon
 
 </div>
 
-</center>
+</div>
+
+
+
+</div>
+
 
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { initializeApp }
 
-import { getFirestore,
-collection,
-getDocs,
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+
+getFirestore,
 doc,
+getDoc,
 updateDoc
+
 }
 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-const firebaseConfig = {
 
-apiKey: "AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+const firebaseConfig={
 
-authDomain: "printportal-36ae0.firebaseapp.com",
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 
-projectId: "printportal-36ae0",
+authDomain:"printportal-36ae0.firebaseapp.com",
 
-storageBucket: "printportal-36ae0.firebasestorage.app",
-
-messagingSenderId: "453235885594",
-
-appId: "1:453235885594:web:2bb8e5a2449ace9bbd33a3"
+projectId:"printportal-36ae0"
 
 };
 
-const app = initializeApp(firebaseConfig);
+
+
+const app=initializeApp(firebaseConfig);
 
 const db=getFirestore(app);
 
 
-window.showMenu=function(){
 
-let m=document.getElementById("menu");
+let sellerID=localStorage.currentSeller;
 
-if(m.style.display=="block")
-m.style.display="none";
-else
-m.style.display="block";
+
+
+/* LOAD SELLER */
+
+const snap=await getDoc(doc(db,"seller",sellerID));
+
+let s=snap.data();
+
+
+
+document.getElementById("validity").innerHTML=
+
+"Validity : "+s.expiry;
+
+
+
+document.getElementById("pdfcount").innerHTML=
+
+"PDF : "+(s.pdf||0);
+
+
+
+/* TEMP PASSWORD POPUP */
+
+if(s.temp){
+
+alert(
+
+"Your password is temporary.\nPlease change password."
+
+);
 
 }
 
 
-window.logout=function(){
+
+/* CHANGE PASSWORD */
+
+window.changePass=async function(){
+
+let p=prompt("New Password");
+
+if(!p) return;
+
+
+
+await updateDoc(doc(db,"seller",sellerID),{
+
+pass:p,
+temp:false
+
+});
+
+
+alert("Password Changed");
+
+}
+
+
+
+/* AADHAAR OPEN */
+
+window.openAadhar=function(){
+
+location="aadhar.html";
+
+}
+
+
+</script>
+
+
+
+<script>
+
+
+function menu(){
+
+let m=document.getElementById("menu");
+
+m.style.display=
+
+m.style.display=="block"
+
+?"none":"block";
+
+}
+
+
+
+/* LOGOUT */
+
+function logout(){
 
 localStorage.clear();
 
@@ -196,42 +382,9 @@ location="index.html";
 }
 
 
-window.aadhaar=function(){
-
-location="aadhaar.html";
-
-}
-
-
-window.changePass=function(){
-
-location="changepass.html";
-
-}
-
-
-window.validity=async function(){
-
-let user=localStorage.currentSeller;
-
-let snap=await getDocs(collection(db,"seller"));
-
-snap.forEach(d=>{
-
-let s=d.data();
-
-if(s.user==user){
-
-alert("Expiry Date : "+s.expiry);
-
-}
-
-});
-
-}
-
-
 </script>
+
+
 
 </body>
 
