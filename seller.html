@@ -15,6 +15,7 @@ margin:0;
 background:#f5f7fa;
 }
 
+
 /* HEADER */
 
 .header{
@@ -27,6 +28,19 @@ text-align:center;
 position:relative;
 
 }
+
+
+/* USERNAME */
+
+.user{
+
+position:absolute;
+left:20px;
+top:18px;
+font-size:16px;
+
+}
+
 
 /* DP ICON */
 
@@ -53,8 +67,7 @@ background:white;
 box-shadow:0px 0px 15px gray;
 border-radius:10px;
 display:none;
-width:220px;
-z-index:10;
+width:230px;
 
 }
 
@@ -73,9 +86,9 @@ background:#f0f0f0;
 }
 
 
-/* INFO BOX */
+/* DASHBOARD */
 
-.info{
+.dashboard{
 
 text-align:center;
 margin-top:20px;
@@ -95,26 +108,29 @@ margin-top:30px;
 
 }
 
+
 .card{
 
 width:260px;
-height:140px;
+height:150px;
 background:white;
 margin:20px;
 border-radius:12px;
 box-shadow:0px 0px 15px gray;
 text-align:center;
-padding-top:40px;
+padding-top:45px;
 font-size:20px;
 cursor:pointer;
 
 }
+
 
 .card:hover{
 
 transform:scale(1.05);
 
 }
+
 
 .coming{
 
@@ -133,6 +149,12 @@ font-size:14px;
 
 <div class="header">
 
+<div class="user" id="username">
+
+Seller
+
+</div>
+
 PRINT PORTAL SELLER
 
 <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
@@ -147,21 +169,27 @@ onclick="menu()">
 
 <div class="menu" id="menu">
 
-<div onclick="changePass()">
+<div id="sellerName">
 
-🔑 Change Password
+User :
 
 </div>
 
 <div id="validity">
 
-Validity
+Validity :
 
 </div>
 
 <div id="pdfcount">
 
-PDF Count
+PDF :
+
+</div>
+
+<div onclick="changePass()">
+
+🔑 Change Password
 
 </div>
 
@@ -175,9 +203,9 @@ Logout
 
 
 
-<div class="info">
+<div class="dashboard">
 
-Welcome Seller
+Welcome Seller Panel
 
 </div>
 
@@ -272,7 +300,6 @@ projectId:"printportal-36ae0"
 };
 
 
-
 const app=initializeApp(firebaseConfig);
 
 const db=getFirestore(app);
@@ -282,12 +309,21 @@ const db=getFirestore(app);
 let sellerID=localStorage.currentSeller;
 
 
-
 /* LOAD SELLER */
 
 const snap=await getDoc(doc(db,"seller",sellerID));
 
 let s=snap.data();
+
+
+
+/* USERNAME SHOW */
+
+document.getElementById("username").innerHTML=s.user;
+
+document.getElementById("sellerName").innerHTML=
+
+"User : "+s.user;
 
 
 
@@ -303,13 +339,27 @@ document.getElementById("pdfcount").innerHTML=
 
 
 
-/* TEMP PASSWORD POPUP */
+/* EXPIRY CHECK */
+
+let today=new Date().toISOString().split('T')[0];
+
+if(s.expiry<today){
+
+alert("Your ID Expired");
+
+logout();
+
+}
+
+
+
+/* TEMP PASSWORD */
 
 if(s.temp){
 
 alert(
 
-"Your password is temporary.\nPlease change password."
+"Temporary Password Detected\nChange Password Now"
 
 );
 
@@ -341,13 +391,14 @@ alert("Password Changed");
 
 
 
-/* AADHAAR OPEN */
+/* OPEN AADHAR */
 
 window.openAadhar=function(){
 
 location="aadhar.html";
 
 }
+
 
 
 </script>
@@ -370,8 +421,6 @@ m.style.display=="block"
 }
 
 
-
-/* LOGOUT */
 
 function logout(){
 
