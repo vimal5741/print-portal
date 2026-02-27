@@ -423,11 +423,39 @@ const db=getFirestore(app);
 
 window.downloadPDF=function(){
 
-html2canvas(card,{scale:6}).then(async canvas=>{
+html2canvas(card,{
 
-var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
+scale:6,
 
-pdf.addImage(canvas.toDataURL(),"PNG",0,0,canvas.width,canvas.height);
+useCORS:true,
+
+allowTaint:true
+
+})
+
+.then(async canvas=>{
+
+var pdf=new jspdf.jsPDF(
+
+'landscape',
+'px',
+[canvas.width,canvas.height]
+
+);
+
+pdf.addImage(
+
+canvas.toDataURL(),
+
+"PNG",
+
+0,
+0,
+
+canvas.width,
+canvas.height
+
+);
 
 
 /* AUTO NAME */
@@ -453,12 +481,6 @@ pdf:(data.pdf||0)+1
 
 });
 
-
 });
 
 }
-
-</script>
-
-</body>
-</html>
