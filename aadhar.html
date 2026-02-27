@@ -1,4 +1,19 @@
-<!DOCTYPE html><html><head><title>PRINT PORTAL Aadhaar Editor</title><meta name="viewport" content="width=device-width"><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>PRINT PORTAL Aadhaar Editor</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
 
 body{
 font-family:Arial;
@@ -6,7 +21,6 @@ background:#e6e6e6;
 text-align:center;
 margin:0;
 }
-
 
 /* HEADER */
 
@@ -19,7 +33,6 @@ font-size:22px;
 font-weight:bold;
 
 }
-
 
 .backBtn{
 
@@ -34,7 +47,6 @@ cursor:pointer;
 
 }
 
-
 /* PANEL */
 
 .panel{
@@ -48,15 +60,15 @@ box-shadow:0px 0px 15px gray;
 
 }
 
-
 label{
+
 display:block;
 text-align:left;
 margin-left:10px;
 font-size:13px;
 font-weight:bold;
-}
 
+}
 
 input,select,textarea{
 
@@ -69,13 +81,11 @@ font-size:14px;
 
 }
 
-
 textarea{
+
 height:60px;
+
 }
-
-
-/* BUTTON */
 
 button{
 
@@ -89,7 +99,6 @@ cursor:pointer;
 
 }
 
-
 /* CARD */
 
 .card{
@@ -102,196 +111,243 @@ overflow:hidden;
 
 }
 
-
-/* BACKGROUND */
-
 .bg{
+
 position:absolute;
 width:100%;
 height:100%;
 left:0;
 top:0;
-z-index:1;
+
 }
-
-
-/* WHITE BOX */
-
-.box{position:absolute;top:12mm;left:28mm;width:32mm;height:10mm;background:white;z-index:2;}
-.box2{position:absolute;top:11mm;left:5mm;width:2.5mm;height:26.7mm;background:white;z-index:2;}
-.box3{position:absolute;top:44mm;left:17mm;width:40mm;height:5mm;background:white;z-index:2;}
-.box4{position:absolute;top:10mm;right:82.9mm;width:1.8mm;height:26mm;background:white;z-index:2;}
-.box5{position:absolute;top:12mm;right:38mm;width:45mm;height:10mm;background:white;z-index:2;}
-.box6{position:absolute;bottom:18.5mm;right:37.5mm;width:45mm;height:10mm;background:white;z-index:2;}
-.box7{position:absolute;bottom:4.8mm;right:20mm;width:50mm;height:7mm;background:white;z-index:2;}
-
-.box8{
-position:absolute;
-top:11mm;
-right:4.2mm;
-width:29mm;
-height:30mm;
-background:white;
-z-index:2;
-}
-
-
-/* PHOTO */
 
 .photo{
+
 position:absolute;
 top:12mm;
 left:8.2mm;
 width:17.5mm;
 height:21mm;
 object-fit:cover;
-z-index:3;
+
 }
 
+.hindi{
 
-/* TEXT */
-
-.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-
-
-/* ADDRESS */
-
-.addrHindi{
 position:absolute;
 top:12mm;
-left:88.8mm;
-font-size:4.5pt;
-width:35mm;
-white-space:pre-line;
-line-height:8pt;
-z-index:3;
+left:29mm;
+font-size:5pt;
+
 }
 
+.english{
 
-.addrEnglish{
 position:absolute;
-top:25.1mm;
-left:89mm;
-font-size:4.5pt;
-width:35mm;
-white-space:pre-line;
-line-height:8pt;
-z-index:3;
+top:15mm;
+left:29mm;
+font-size:5pt;
+
 }
 
+.dob{
 
-/* NUMBER */
+position:absolute;
+top:18mm;
+left:29mm;
+font-size:5pt;
+
+}
+
+.gender{
+
+position:absolute;
+top:21mm;
+left:29mm;
+font-size:5pt;
+
+}
 
 .number{
-position:absolute;
-top:45.3mm;
-left:27mm;
-font-family:"Times New Roman";
-font-size:11pt;
-font-weight:bold;
-z-index:3;
-}
 
+position:absolute;
+top:45mm;
+left:27mm;
+font-size:12pt;
+font-weight:bold;
+
+}
 
 .number2{
+
 position:absolute;
-top:45.3mm;
-right:25.7mm;
-font-family:"Times New Roman";
-font-size:11pt;
+top:45mm;
+right:27mm;
+font-size:12pt;
 font-weight:bold;
-z-index:3;
+
 }
 
-
-/* QR */
-
 .qr{
+
 position:absolute;
 top:13mm;
 right:6mm;
-z-index:3;
-}
-
-</style></head><body><script>
-
-/* LOGIN PROTECTION */
-
-if(localStorage.login==null){
-
-window.location="index.html";
 
 }
 
-</script><div class="header"><button class="backBtn"
+</style>
 
-onclick="goBack()">
+</head>
+
+<body>
+
+<script>
+
+/* LOGIN CHECK */
+
+if(localStorage.currentSeller==null){
+
+location="index.html";
+
+}
+
+</script>
+
+<div class="header">
+
+<button class="backBtn"
+onclick="location='seller.html'">
 
 ⬅ Back
 
-</button>PRINT PORTAL Aadhaar Editor
+</button>
 
-</div><div class="panel"><h3>Aadhaar PVC Card Editor</h3><label>Photo</label>
+PRINT PORTAL Aadhaar Editor
+
+</div>
+
+
+<div class="panel">
+
+<h3>Aadhaar PVC Card Editor</h3>
+
+
+<label>Photo</label>
+
 <input type="file" id="photo">
 
+
 <label>Name Hindi</label>
-<input type="text" id="nameHindi">
+
+<input id="nameHindi">
+
 
 <label>Name English</label>
-<input type="text" id="nameEnglish">
+
+<input id="nameEnglish">
+
 
 <label>Date of Birth</label>
+
 <input type="date" id="dob">
+
 
 <label>Gender</label>
 
-<select id="gender"><option>MALE / पुरुष</option>
-<option>FEMALE / महिला</option></select><label>Address Hindi</label>
+<select id="gender">
 
-<textarea id="addrHindi"></textarea><label>Address English</label>
+<option>MALE</option>
 
-<textarea id="addrEnglish"></textarea><label>Aadhaar Number</label>
+<option>FEMALE</option>
 
-<input type="text" id="aadhaar" maxlength="12"><br><button onclick="make()">
+</select>
+
+
+<label>Aadhaar Number</label>
+
+<input id="aadhaar" maxlength="12">
+
+
+<br>
+
+<button onclick="make()">
+
 Generate Card
-</button><button onclick="downloadPDF()">
+
+</button>
+
+
+<button onclick="downloadPDF()">
+
 Download HD PDF
-</button></div><div class="card" id="card"><img class="bg"
+
+</button>
+
+
+</div>
+
+
+
+<div id="card" class="card">
+
+<img class="bg"
 src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_Card_2024.png">
 
-<div class="box"></div>
-<div class="box2"></div>
-<div class="box3"></div>
-<div class="box4"></div>
-<div class="box5"></div>
-<div class="box6"></div>
-<div class="box7"></div>
-<div class="box8"></div><img id="outPhoto" class="photo"><div id="outHindi" class="hindi"></div>
+
+<img id="outPhoto" class="photo">
+
+<div id="outHindi" class="hindi"></div>
+
 <div id="outEnglish" class="english"></div>
+
 <div id="outDob" class="dob"></div>
-<div id="outGender" class="gender"></div><div id="outAddrHindi" class="addrHindi"></div>
-<div id="outAddrEnglish" class="addrEnglish"></div><div id="outNumber" class="number"></div>
-<div id="outNumber2" class="number2"></div><div id="qrcode" class="qr"></div></div><script>
+
+<div id="outGender" class="gender"></div>
+
+<div id="outNumber" class="number"></div>
+
+<div id="outNumber2" class="number2"></div>
+
+<div id="qrcode" class="qr"></div>
+
+</div>
 
 
-var qrSize=102;
+<script type="module">
 
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
-/* BACK BUTTON */
-
-function goBack(){
-
-window.location="seller.html";
-
+import {
+getFirestore,
+collection,
+getDocs,
+doc,
+updateDoc
 }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-/* GENERATE */
 
-function make(){
+const firebaseConfig={
+
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+
+authDomain:"printportal-36ae0.firebaseapp.com",
+
+projectId:"printportal-36ae0"
+
+};
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+
+window.make=function(){
 
 outHindi.innerHTML=nameHindi.value;
 
@@ -300,47 +356,22 @@ outEnglish.innerHTML=nameEnglish.value.toUpperCase();
 outGender.innerHTML=gender.value;
 
 
-outAddrHindi.innerText=addrHindi.value;
-
-outAddrEnglish.innerText=addrEnglish.value.toUpperCase();
-
-
-
 let d=dob.value;
-
-let dobText="";
-let yob="";
-
 
 if(d){
 
 let p=d.split("-");
 
-dobText=p[2]+"/"+p[1]+"/"+p[0];
-
-yob=p[0];
-
-outDob.innerHTML="जन्म तिथि/DOB: "+dobText;
+outDob.innerHTML=p[2]+"/"+p[1]+"/"+p[0];
 
 }
-
 
 
 let num=aadhaar.value;
 
-
-if(num.length==12){
-
-num=num.substring(0,4)+" "+
-num.substring(4,8)+" "+
-num.substring(8,12);
-
-}
-
-
 outNumber.innerHTML=num;
-outNumber2.innerHTML=num;
 
+outNumber2.innerHTML=num;
 
 
 let file=photo.files[0];
@@ -363,34 +394,15 @@ r.readAsDataURL(file);
 
 /* QR */
 
-let qrData=
-
-'<?xml version="1.0" encoding="UTF-8"?>'+
-
-'<PrintLetterBarcodeData '+
-
-'uid="'+aadhaar.value+'" '+
-
-'name="'+nameEnglish.value.toUpperCase()+'" '+
-
-'gender="'+gender.value.split(" ")[0]+'" '+
-
-'yob="'+yob+'" '+
-
-'add="'+addrEnglish.value.toUpperCase()+'" '+
-
-'dob="'+dobText+'"/>';
-
-
 document.getElementById("qrcode").innerHTML="";
 
+new QRCode(qrcode,{
 
-new QRCode(document.getElementById("qrcode"),{
+text:nameEnglish.value,
 
-text:qrData,
-width:qrSize,
-height:qrSize,
-correctLevel:QRCode.CorrectLevel.H
+width:100,
+
+height:100
 
 });
 
@@ -399,46 +411,74 @@ correctLevel:QRCode.CorrectLevel.H
 
 
 
-/* PDF DOWNLOAD + COUNT */
+/* PDF DOWNLOAD */
 
-function downloadPDF(){
+window.downloadPDF=async function(){
 
 
-html2canvas(card,{scale:6,useCORS:true})
+let name=nameEnglish.value;
 
-.then(function(canvas){
 
-var img=canvas.toDataURL("image/png");
+if(name==""){
+
+alert("Enter Name");
+
+return;
+
+}
+
+
+html2canvas(card,{scale:5})
+
+.then(async function(canvas){
+
 
 var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
 
-pdf.addImage(img,'PNG',0,0,canvas.width,canvas.height);
 
-pdf.save("PRINT_PORTAL_AADHAAR.pdf");
+pdf.addImage(
+
+canvas.toDataURL("image/png"),
+
+'PNG',
+
+0,
+
+0,
+
+canvas.width,
+
+canvas.height
+
+);
 
 
-/* PDF COUNT */
+/* PDF NAME AUTO */
 
-let sellers=
-JSON.parse(localStorage.sellers||"[]");
-
-let user=
-localStorage.currentSeller;
+pdf.save(name+".pdf");
 
 
-for(let s of sellers){
+/* PDF COUNT FIREBASE */
+
+let user=localStorage.currentSeller;
+
+const snap=await getDocs(collection(db,"seller"));
+
+snap.forEach(async d=>{
+
+let s=d.data();
 
 if(s.user==user){
 
-s.pdf=(s.pdf||0)+1;
+await updateDoc(doc(db,"seller",d.id),{
+
+pdf:(s.pdf||0)+1
+
+});
 
 }
 
-}
-
-
-localStorage.sellers=
-JSON.stringify(sellers);
+});
 
 
 });
@@ -447,5 +487,9 @@ JSON.stringify(sellers);
 }
 
 
-</script></body>
+</script>
+
+
+</body>
+
 </html>
