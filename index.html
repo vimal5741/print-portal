@@ -1,5 +1,13 @@
-<!DOCTYPE html><html>
-<head><title>PRINT PORTAL</title><meta name="viewport" content="width=device-width"><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>PRINT PORTAL</title>
+
+<meta name="viewport" content="width=device-width">
+
+<style>
 
 body{
 font-family:Arial;
@@ -19,16 +27,19 @@ margin-top:120px;
 }
 
 .enter{
-padding:10px 25px;
-font-size:16px;
+
+padding:12px 30px;
+font-size:18px;
 background:#00cc99;
 border:none;
-border-radius:20px;
+border-radius:25px;
 color:white;
 cursor:pointer;
+
 }
 
 #login{
+
 display:none;
 background:white;
 color:black;
@@ -36,76 +47,162 @@ width:330px;
 margin:40px auto;
 padding:20px;
 border-radius:10px;
+
 }
 
 input,select{
+
 width:90%;
 padding:10px;
 margin:6px;
+
 }
 
 button{
+
 padding:10px 20px;
 background:#003366;
 color:white;
 border:none;
+
 }
 
-</style></head><body><div class="header">
+</style>
+
+</head>
+
+<body>
+
+
+
+<div class="header">
+
 PRINT PORTAL
-</div><div id="welcome"><h2>Welcome to Digital Print System</h2><button class="enter"
+
+</div>
+
+
+
+<div id="welcome">
+
+<h2>Welcome to Digital Print System</h2>
+
+<button class="enter"
 onclick="startLogin()">
 
 ENTER PORTAL
 
-</button></div><div id="login"><h3>LOGIN PANEL</h3><select id="type">
+</button>
+
+</div>
+
+
+
+<div id="login">
+
+<h3>LOGIN PANEL</h3>
+
+
+<select id="type">
+
 <option>Admin</option>
 <option>Seller</option>
-</select><input id="user" placeholder="Username"><input id="pass" type="password"
+
+</select>
+
+
+
+<input id="user"
+placeholder="Username">
+
+<input id="pass"
+type="password"
 placeholder="Password">
 
-<br><button onclick="login()">
+<br>
+
+<button onclick="login()">
+
 LOGIN
-</button><div id="msg" style="color:red"></div></div><script>
 
-function startLogin(){
+</button>
 
-document.getElementById("welcome").style.display="none";
+<div id="msg" style="color:red"></div>
 
-document.getElementById("login").style.display="block";
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+
+authDomain:"printportal-36ae0.firebaseapp.com",
+
+projectId:"printportal-36ae0"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+
+
+window.startLogin=function(){
+
+welcome.style.display="none";
+login.style.display="block";
 
 }
 
 
-/* Default Admin */
 
-if(!localStorage.admin){
+/* LOGIN */
 
-localStorage.admin="admin";
-localStorage.adminPass="1234";
+window.login=async function(){
 
-}
-
-
-function login(){
-
-let t=document.getElementById("type").value;
-
-let u=document.getElementById("user").value;
-
-let p=document.getElementById("pass").value;
+let t=type.value;
+let u=user.value;
+let p=pass.value;
 
 
-/* ADMIN */
+
+/* ADMIN LOGIN */
 
 if(t=="Admin"){
 
-if(u==localStorage.admin
-&& p==localStorage.adminPass){
+const snap=await getDoc(doc(db,"admin","login"));
+
+let a=snap.data();
+
+if(u==a.user && p==a.pass){
 
 localStorage.login="admin";
 
-window.open("admin.html","_self");
+location="admin.html";
 
 return;
 
@@ -114,30 +211,42 @@ return;
 }
 
 
-/* SELLER */
 
-let sellers=JSON.parse(localStorage.sellers||"[]");
+/* SELLER LOGIN */
 
-for(let s of sellers){
+const s=await getDocs(collection(db,"seller"));
 
-if(s.user==u && s.pass==p && s.active){
+s.forEach((d)=>{
+
+let x=d.data();
+
+if(
+
+x.user==u
+&& x.pass==p
+&& x.active
+
+){
 
 localStorage.login="seller";
 
-localStorage.currentSeller=u;
+localStorage.currentSeller=d.id;
 
-window.open("seller.html","_self");
-
-return;
+location="seller.html";
 
 }
 
+});
+
+
+msg.innerHTML="Wrong Login";
+
 }
 
 
-document.getElementById("msg").innerHTML="Wrong Login";
 
-}
+</script>
 
-</script></body>
+</body>
+
 </html>
