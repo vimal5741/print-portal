@@ -13,7 +13,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+
 <style>
+
+/* SAME YOUR STYLE */
 
 body{
 font-family:Arial;
@@ -22,20 +25,15 @@ text-align:center;
 margin:0;
 }
 
-/* HEADER */
-
 .header{
-
 background:#003366;
 color:white;
 padding:12px;
 font-size:22px;
 font-weight:bold;
-
 }
 
 .backBtn{
-
 position:absolute;
 left:10px;
 top:10px;
@@ -44,51 +42,39 @@ background:white;
 color:#003366;
 border:none;
 cursor:pointer;
-
 }
 
-/* PANEL */
-
 .panel{
-
 background:white;
 width:420px;
 margin:20px auto;
 padding:15px;
 border-radius:10px;
 box-shadow:0px 0px 15px gray;
-
 }
 
 label{
-
 display:block;
 text-align:left;
 margin-left:10px;
 font-size:13px;
 font-weight:bold;
-
 }
 
 input,select,textarea{
-
 width:95%;
 padding:7px;
 margin:5px;
 border:1px solid #aaa;
 border-radius:5px;
 font-size:14px;
-
 }
 
 textarea{
-
 height:60px;
-
 }
 
 button{
-
 padding:10px 18px;
 margin:6px;
 background:#003366;
@@ -96,104 +82,82 @@ color:white;
 border:none;
 border-radius:5px;
 cursor:pointer;
-
 }
 
 /* CARD */
 
 .card{
-
 width:171.2mm;
 height:54mm;
 margin:20px auto;
 position:relative;
 overflow:hidden;
-
 }
 
 .bg{
-
 position:absolute;
 width:100%;
 height:100%;
-left:0;
-top:0;
-
 }
 
-.photo{
+/* PHOTO */
 
+.photo{
 position:absolute;
 top:12mm;
 left:8.2mm;
 width:17.5mm;
 height:21mm;
 object-fit:cover;
-
 }
 
-.hindi{
+/* TEXT */
 
+.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;}
+.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;}
+.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;}
+.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;}
+
+.addrHindi{
 position:absolute;
 top:12mm;
-left:29mm;
-font-size:5pt;
-
+left:88.8mm;
+font-size:4.5pt;
+width:35mm;
+white-space:pre-line;
 }
 
-.english{
-
+.addrEnglish{
 position:absolute;
-top:15mm;
-left:29mm;
-font-size:5pt;
-
+top:25mm;
+left:88.8mm;
+font-size:4.5pt;
+width:35mm;
+white-space:pre-line;
 }
 
-.dob{
-
-position:absolute;
-top:18mm;
-left:29mm;
-font-size:5pt;
-
-}
-
-.gender{
-
-position:absolute;
-top:21mm;
-left:29mm;
-font-size:5pt;
-
-}
+/* NUMBER */
 
 .number{
-
 position:absolute;
 top:45mm;
 left:27mm;
-font-size:12pt;
+font-size:11pt;
 font-weight:bold;
-
 }
 
 .number2{
-
 position:absolute;
 top:45mm;
 right:27mm;
-font-size:12pt;
+font-size:11pt;
 font-weight:bold;
-
 }
 
 .qr{
-
 position:absolute;
 top:13mm;
 right:6mm;
-
 }
 
 </style>
@@ -204,8 +168,6 @@ right:6mm;
 
 <script>
 
-/* LOGIN CHECK */
-
 if(localStorage.currentSeller==null){
 
 location="index.html";
@@ -213,6 +175,7 @@ location="index.html";
 }
 
 </script>
+
 
 <div class="header">
 
@@ -232,58 +195,38 @@ PRINT PORTAL Aadhaar Editor
 
 <h3>Aadhaar PVC Card Editor</h3>
 
-
 <label>Photo</label>
-
 <input type="file" id="photo">
 
-
 <label>Name Hindi</label>
-
 <input id="nameHindi">
 
-
 <label>Name English</label>
-
 <input id="nameEnglish">
 
-
 <label>Date of Birth</label>
-
 <input type="date" id="dob">
 
-
 <label>Gender</label>
-
 <select id="gender">
-
 <option>MALE</option>
-
 <option>FEMALE</option>
-
 </select>
 
+<label>Address Hindi</label>
+<textarea id="addrHindi"></textarea>
+
+<label>Address English</label>
+<textarea id="addrEnglish"></textarea>
 
 <label>Aadhaar Number</label>
-
 <input id="aadhaar" maxlength="12">
-
 
 <br>
 
-<button onclick="make()">
+<button onclick="make()">Generate Card</button>
 
-Generate Card
-
-</button>
-
-
-<button onclick="downloadPDF()">
-
-Download HD PDF
-
-</button>
-
+<button onclick="downloadPDF()">Download HD PDF</button>
 
 </div>
 
@@ -294,19 +237,17 @@ Download HD PDF
 <img class="bg"
 src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_Card_2024.png">
 
-
 <img id="outPhoto" class="photo">
 
 <div id="outHindi" class="hindi"></div>
-
 <div id="outEnglish" class="english"></div>
-
 <div id="outDob" class="dob"></div>
-
 <div id="outGender" class="gender"></div>
 
-<div id="outNumber" class="number"></div>
+<div id="outAddrHindi" class="addrHindi"></div>
+<div id="outAddrEnglish" class="addrEnglish"></div>
 
+<div id="outNumber" class="number"></div>
 <div id="outNumber2" class="number2"></div>
 
 <div id="qrcode" class="qr"></div>
@@ -321,40 +262,33 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
 getFirestore,
-collection,
-getDocs,
 doc,
+getDoc,
 updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-
 const firebaseConfig={
-
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
-
 authDomain:"printportal-36ae0.firebaseapp.com",
-
 projectId:"printportal-36ae0"
-
 };
 
-
 const app=initializeApp(firebaseConfig);
-
 const db=getFirestore(app);
 
 
+/* GENERATE */
 
 window.make=function(){
 
 outHindi.innerHTML=nameHindi.value;
-
 outEnglish.innerHTML=nameEnglish.value.toUpperCase();
-
 outGender.innerHTML=gender.value;
 
+outAddrHindi.innerHTML=addrHindi.value;
+outAddrEnglish.innerHTML=addrEnglish.value;
 
 let d=dob.value;
 
@@ -366,11 +300,9 @@ outDob.innerHTML=p[2]+"/"+p[1]+"/"+p[0];
 
 }
 
-
 let num=aadhaar.value;
 
 outNumber.innerHTML=num;
-
 outNumber2.innerHTML=num;
 
 
@@ -380,19 +312,11 @@ if(file){
 
 let r=new FileReader();
 
-r.onload=function(e){
-
-outPhoto.src=e.target.result;
-
-}
+r.onload=e=>outPhoto.src=e.target.result;
 
 r.readAsDataURL(file);
 
 }
-
-
-
-/* QR */
 
 document.getElementById("qrcode").innerHTML="";
 
@@ -401,95 +325,52 @@ new QRCode(qrcode,{
 text:nameEnglish.value,
 
 width:100,
-
 height:100
 
 });
 
-
 }
 
 
 
-/* PDF DOWNLOAD */
+/* PDF */
 
 window.downloadPDF=async function(){
 
-
 let name=nameEnglish.value;
 
+html2canvas(card,{scale:6})
 
-if(name==""){
-
-alert("Enter Name");
-
-return;
-
-}
-
-
-html2canvas(card,{scale:5})
-
-.then(async function(canvas){
-
+.then(async canvas=>{
 
 var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
 
-
-pdf.addImage(
-
-canvas.toDataURL("image/png"),
-
-'PNG',
-
-0,
-
-0,
-
-canvas.width,
-
-canvas.height
-
-);
-
-
-/* PDF NAME AUTO */
+pdf.addImage(canvas.toDataURL(),"PNG",0,0,canvas.width,canvas.height);
 
 pdf.save(name+".pdf");
 
 
-/* PDF COUNT FIREBASE */
+/* PDF COUNT */
 
-let user=localStorage.currentSeller;
+let id=localStorage.currentSeller;
 
-const snap=await getDocs(collection(db,"seller"));
+const ref=doc(db,"seller",id);
 
-snap.forEach(async d=>{
+const snap=await getDoc(ref);
 
-let s=d.data();
+let data=snap.data();
 
-if(s.user==user){
+await updateDoc(ref,{
 
-await updateDoc(doc(db,"seller",d.id),{
+pdf:(data.pdf||0)+1
 
-pdf:(s.pdf||0)+1
+});
 
 });
 
 }
-
-});
-
-
-});
-
-
-}
-
 
 </script>
 
-
 </body>
-
 </html>
