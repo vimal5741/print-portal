@@ -20,6 +20,8 @@ color:white;
 }
 
 
+/* BOX */
+
 .box{
 
 width:380px;
@@ -27,8 +29,26 @@ background:rgba(0,0,0,0.5);
 padding:25px;
 border-radius:20px;
 
+position:relative;
+
 }
 
+
+/* BACK BUTTON */
+
+.back{
+
+position:absolute;
+left:15px;
+top:15px;
+cursor:pointer;
+font-size:14px;
+color:#ddd;
+
+}
+
+
+/* TITLE */
 
 .title{
 
@@ -47,6 +67,8 @@ color:#ddd;
 }
 
 
+/* INPUT */
+
 input{
 
 width:100%;
@@ -57,6 +79,8 @@ border:none;
 
 }
 
+
+/* PASSWORD */
 
 .passBox{
 
@@ -76,6 +100,8 @@ color:black;
 }
 
 
+
+/* ROLE */
 
 .role{
 
@@ -107,6 +133,8 @@ background:#00cc99 !important;
 
 
 
+/* REGISTER BUTTON */
+
 .register{
 
 width:100%;
@@ -121,6 +149,24 @@ cursor:pointer;
 
 }
 
+
+/* LOGIN LINK */
+
+.loginLink{
+
+text-align:center;
+margin-top:10px;
+cursor:pointer;
+color:#ddd;
+
+}
+
+.loginLink:hover{
+
+color:white;
+
+}
+
 </style>
 
 </head>
@@ -130,6 +176,15 @@ cursor:pointer;
 
 
 <div class="box">
+
+
+<div class="back"
+onclick="location='index.html'">
+
+⬅ Back to Login
+
+</div>
+
 
 
 <div class="title">
@@ -227,6 +282,15 @@ Register
 </button>
 
 
+<div class="loginLink"
+
+onclick="location='index.html'">
+
+Back to Login
+
+</div>
+
+
 </div>
 
 
@@ -239,9 +303,11 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 
 import {
+
 getFirestore,
 collection,
 addDoc
+
 }
 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
@@ -289,6 +355,8 @@ alert("Master Coming Soon");
 }
 
 
+
+/* REGISTER */
 
 window.registerUser=async function(){
 
