@@ -2,7 +2,8 @@
 <html>
 <head>
 
-<title>PRINT PORTAL Registration</title>
+<title>Print Portal Register</title>
+
 <meta name="viewport" content="width=device-width">
 
 <style>
@@ -10,7 +11,7 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(160deg,#020024,#090979,#00d4ff);
+background:linear-gradient(150deg,#020024,#090979,#00d4ff);
 height:100vh;
 display:flex;
 justify-content:center;
@@ -19,55 +20,43 @@ color:white;
 }
 
 
-/* BOX */
-
 .box{
 
-width:400px;
-background:rgba(0,0,0,0.45);
+width:380px;
+background:rgba(0,0,0,0.5);
 padding:25px;
 border-radius:20px;
-backdrop-filter:blur(12px);
-box-shadow:0px 0px 25px rgba(0,0,0,0.6);
 
 }
 
 
-/* TITLE */
-
 .title{
 
-font-size:32px;
+font-size:30px;
 text-align:center;
 font-weight:bold;
 
 }
 
-
 .sub{
 
 text-align:center;
-margin-bottom:20px;
+margin-bottom:15px;
 color:#ddd;
 
 }
 
 
-/* INPUT */
-
 input{
 
 width:100%;
 padding:12px;
-margin:8px 0;
+margin:7px 0;
 border-radius:10px;
 border:none;
-font-size:15px;
 
 }
 
-
-/* PASSWORD BOX */
 
 .passBox{
 
@@ -79,7 +68,7 @@ position:relative;
 .eye{
 
 position:absolute;
-right:12px;
+right:10px;
 top:14px;
 cursor:pointer;
 color:black;
@@ -87,12 +76,10 @@ color:black;
 }
 
 
-/* ROLE */
 
 .role{
 
 display:flex;
-justify-content:space-between;
 margin-top:10px;
 
 }
@@ -101,10 +88,10 @@ margin-top:10px;
 .role button{
 
 flex:1;
-margin:4px;
+margin:3px;
 padding:10px;
-border-radius:10px;
 border:none;
+border-radius:10px;
 background:#003366;
 color:white;
 cursor:pointer;
@@ -119,29 +106,18 @@ background:#00cc99 !important;
 }
 
 
-/* BUTTON */
 
 .register{
 
 width:100%;
-margin-top:15px;
 padding:12px;
-font-size:16px;
+margin-top:15px;
 border:none;
-border-radius:12px;
+border-radius:10px;
 background:linear-gradient(90deg,#00c6ff,#0072ff);
 color:white;
+font-size:16px;
 cursor:pointer;
-
-}
-
-
-.back{
-
-margin-top:12px;
-text-align:center;
-cursor:pointer;
-color:#ddd;
 
 }
 
@@ -149,14 +125,16 @@ color:#ddd;
 
 </head>
 
+
 <body>
 
 
 <div class="box">
 
+
 <div class="title">
 
-REGISTER
+WELCOME
 
 </div>
 
@@ -165,6 +143,7 @@ REGISTER
 Secure Print Portal
 
 </div>
+
 
 
 <input id="name"
@@ -179,6 +158,7 @@ placeholder="Username">
 placeholder="Mobile Number">
 
 
+
 <div class="passBox">
 
 <input id="pass"
@@ -186,7 +166,7 @@ type="password"
 placeholder="Password">
 
 <span class="eye"
-onclick="togglePass('pass')">
+onclick="showPass('pass')">
 👁
 </span>
 
@@ -201,7 +181,7 @@ type="password"
 placeholder="Confirm Password">
 
 <span class="eye"
-onclick="togglePass('pass2')">
+onclick="showPass('pass2')">
 👁
 </span>
 
@@ -234,24 +214,17 @@ Master
 
 </button>
 
+
 </div>
 
 
 
 <button class="register"
-onclick="register()">
+onclick="registerUser()">
 
 Register
 
 </button>
-
-
-<div class="back"
-onclick="location='index.html'">
-
-Back to Login
-
-</div>
 
 
 </div>
@@ -260,8 +233,10 @@ Back to Login
 
 <script type="module">
 
+
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
 
 import {
 getFirestore,
@@ -270,6 +245,7 @@ addDoc
 }
 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
 
 
 const firebaseConfig={
@@ -299,13 +275,14 @@ seller.classList.remove("active");
 admin.classList.remove("active");
 master.classList.remove("active");
 
+
 document.getElementById(r)
 .classList.add("active");
 
 
 if(r=="master"){
 
-alert("Master Panel Coming Soon");
+alert("Master Coming Soon");
 
 }
 
@@ -313,8 +290,7 @@ alert("Master Panel Coming Soon");
 
 
 
-window.register=async function(){
-
+window.registerUser=async function(){
 
 let n=name.value;
 let u=user.value;
@@ -325,7 +301,7 @@ let p2=pass2.value;
 
 if(n==""||u==""||m==""||p==""||p2==""||role==""){
 
-alert("All Fields Required");
+alert("Fill All Fields");
 
 return;
 
@@ -343,7 +319,7 @@ return;
 
 if(role=="master"){
 
-alert("Master Registration Coming Soon");
+alert("Master Panel Coming Soon");
 
 return;
 
@@ -351,7 +327,7 @@ return;
 
 
 
-await addDoc(collection(db,"request"),{
+await addDoc(collection(db,"registration"),{
 
 name:n,
 user:u,
@@ -363,11 +339,13 @@ status:"pending"
 });
 
 
-alert("Registration Submitted");
+alert("Registration Success");
 
 location="index.html";
 
+
 }
+
 
 
 </script>
@@ -376,7 +354,7 @@ location="index.html";
 
 <script>
 
-function togglePass(id){
+function showPass(id){
 
 let x=document.getElementById(id);
 
@@ -388,6 +366,7 @@ x.type="password";
 }
 
 </script>
+
 
 
 </body>
