@@ -10,66 +10,203 @@
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:linear-gradient(#003366,#001122);
+font-family:Arial;
+height:100vh;
+
+background:
+linear-gradient(180deg,#020024,#003366,#001133);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
 color:white;
+}
+
+
+/* LOGIN BOX */
+
+.loginBox{
+
+width:360px;
+
+padding:30px;
+
+border-radius:20px;
+
+background:rgba(255,255,255,0.05);
+
+backdrop-filter:blur(15px);
+
+box-shadow:0px 0px 30px black;
+
 text-align:center;
+
 }
 
-.header{
-font-size:35px;
-padding:20px;
-background:#002244;
+
+/* TITLE */
+
+.title{
+
+font-size:40px;
+font-weight:bold;
+
 }
 
-/* Welcome */
+.sub{
 
-#welcome{
-margin-top:120px;
+font-size:14px;
+opacity:.8;
+margin-bottom:20px;
+
 }
 
-.enter{
 
-padding:12px 30px;
-font-size:18px;
-background:#00cc99;
+/* INPUT */
+
+.inputBox{
+
+position:relative;
+
+margin:10px 0;
+
+}
+
+
+input{
+
+width:100%;
+
+padding:14px;
+
+border-radius:10px;
+
 border:none;
-border-radius:25px;
+
+background:rgba(255,255,255,0.08);
+
 color:white;
+
+font-size:15px;
+
+outline:none;
+
+}
+
+
+/* EYE ICON */
+
+.eye{
+
+position:absolute;
+
+right:10px;
+
+top:12px;
+
+cursor:pointer;
+
+font-size:18px;
+
+}
+
+
+/* ROLE BUTTON */
+
+.role{
+
+display:flex;
+
+gap:10px;
+
+margin-top:15px;
+
+}
+
+
+.role button{
+
+flex:1;
+
+padding:10px;
+
+border-radius:10px;
+
+border:none;
+
+background:#222;
+
+color:white;
+
 cursor:pointer;
 
 }
 
-/* LOGIN BOX */
 
-#login{
+.activeRole{
 
-display:none;
-background:white;
-color:black;
-width:350px;
-margin:40px auto;
-padding:20px;
-border-radius:10px;
-box-shadow:0px 0px 20px black;
+background:#00aaff !important;
 
 }
 
-input,select{
 
-width:90%;
-padding:10px;
-margin:6px;
+/* LOGIN BUTTON */
 
-}
+.loginBtn{
 
-button{
+margin-top:20px;
 
-padding:10px 20px;
-background:#003366;
-color:white;
+width:100%;
+
+padding:14px;
+
+font-size:18px;
+
+border-radius:12px;
+
 border:none;
+
+background:linear-gradient(90deg,#00ccff,#0066ff);
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+/* REGISTER */
+
+.registerBtn{
+
+margin-top:15px;
+
+width:100%;
+
+padding:12px;
+
+border-radius:12px;
+
+border:none;
+
+background:linear-gradient(90deg,#00cc99,#009966);
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+.footer{
+
+margin-top:20px;
+
+font-size:12px;
+
+opacity:.6;
 
 }
 
@@ -79,59 +216,106 @@ border:none;
 
 <body>
 
-<div class="header">
 
-PRINT PORTAL
-
-</div>
+<div class="loginBox">
 
 
-<div id="welcome">
+<div class="title">
 
-<h2>Welcome to Digital Print System</h2>
-
-<button class="enter"
-onclick="startLogin()">
-
-ENTER PORTAL
-
-</button>
+WELCOME
 
 </div>
 
 
+<div class="sub">
 
-<div id="login">
+Secure Print Portal
 
-<h3>LOGIN PANEL</h3>
+</div>
 
 
-<select id="type">
 
-<option>Admin</option>
-<option>Seller</option>
-
-</select>
-
+<div class="inputBox">
 
 <input id="user"
 placeholder="Username">
 
+</div>
+
+
+
+<div class="inputBox">
 
 <input id="pass"
 type="password"
 placeholder="Password">
 
 
-<br>
+<span class="eye"
+onclick="showPass()">
 
-<button onclick="login()">
+👁
 
-LOGIN
+</span>
+
+</div>
+
+
+
+<div class="role">
+
+<button id="sellerBtn"
+onclick="setRole('seller')">
+
+Seller
 
 </button>
 
-<div id="msg" style="color:red"></div>
+
+<button id="adminBtn"
+onclick="setRole('admin')">
+
+Admin
+
+</button>
+
+
+<button id="masterBtn"
+onclick="setRole('master')">
+
+Master
+
+</button>
+
+
+</div>
+
+
+
+<button class="loginBtn"
+
+onclick="login()">
+
+Sign In →
+
+</button>
+
+
+
+<button class="registerBtn">
+
+New Registration
+
+</button>
+
+
+
+<div class="footer">
+
+© Print Portal Secure System
+
+</div>
+
 
 </div>
 
@@ -148,8 +332,6 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import {
 
 getFirestore,
-doc,
-getDoc,
 collection,
 getDocs
 
@@ -177,11 +359,43 @@ const db=getFirestore(app);
 
 
 
-window.startLogin=function(){
+let role="seller";
 
-document.getElementById("welcome").style.display="none";
 
-document.getElementById("login").style.display="block";
+window.setRole=function(r){
+
+role=r;
+
+sellerBtn.classList.remove("activeRole");
+
+adminBtn.classList.remove("activeRole");
+
+masterBtn.classList.remove("activeRole");
+
+
+if(r=="seller")
+sellerBtn.classList.add("activeRole");
+
+
+if(r=="admin")
+adminBtn.classList.add("activeRole");
+
+
+if(r=="master")
+masterBtn.classList.add("activeRole");
+
+}
+
+
+
+/* PASSWORD SHOW */
+
+window.showPass=function(){
+
+if(pass.type=="password")
+pass.type="text";
+else
+pass.type="password";
 
 }
 
@@ -191,31 +405,49 @@ document.getElementById("login").style.display="block";
 
 window.login=async function(){
 
-let t=document.getElementById("type").value;
 
-let u=document.getElementById("user").value;
+let u=user.value;
 
-let p=document.getElementById("pass").value;
+let p=pass.value;
+
+
+/* MASTER */
+
+if(role=="master"){
+
+alert("Master Panel Coming Soon");
+
+return;
+
+}
 
 
 
 /* ADMIN */
 
-if(t=="Admin"){
+if(role=="admin"){
 
-const snap=await getDoc(doc(db,"admin","login"));
 
-let a=snap.data();
+const snap=await getDocs(collection(db,"admin"));
 
-if(u==a.user && p==a.pass){
+
+snap.forEach(d=>{
+
+
+let a=d.data();
+
+
+if(a.user==u && a.pass==p){
 
 localStorage.login="admin";
 
 location="admin.html";
 
-return;
-
 }
+
+
+});
+
 
 }
 
@@ -223,17 +455,21 @@ return;
 
 /* SELLER */
 
-const s=await getDocs(collection(db,"seller"));
+if(role=="seller"){
 
-let ok=false;
 
-s.forEach((d)=>{
+const snap=await getDocs(collection(db,"seller"));
 
-let x=d.data();
 
-if(x.user==u && x.pass==p && x.active){
+snap.forEach(d=>{
 
-ok=true;
+
+let s=d.data();
+
+
+if(s.user==u
+&& s.pass==p
+&& s.active){
 
 localStorage.login="seller";
 
@@ -243,23 +479,23 @@ location="seller.html";
 
 }
 
+
 });
 
 
+}
 
-if(!ok){
-
-msg.innerHTML="Wrong Login";
 
 }
 
 
 
-}
+setRole("seller");
 
 
 </script>
 
 
 </body>
+
 </html>
