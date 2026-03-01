@@ -11,109 +11,105 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(180deg,#0a1f44,#031024);
-color:white;
-text-align:center;
+
+background:linear-gradient(135deg,#0b2c50,#1b5c99,#3a8fd6);
+
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-/* BOX */
+
+/* CARD */
 
 .box{
 
-width:340px;
-margin:60px auto;
-padding:25px;
+width:380px;
+
+padding:30px;
+
 border-radius:20px;
 
-background:rgba(255,255,255,0.05);
+background:rgba(255,255,255,0.1);
 
-backdrop-filter:blur(10px);
+box-shadow:0px 0px 30px black;
 
-box-shadow:0px 0px 30px rgba(0,0,0,0.5);
+text-align:center;
+
+color:white;
 
 }
+
 
 /* TITLE */
 
-h1{
-
-margin-top:10px;
-
-font-size:32px;
-
-color:#40d0ff;
-
+.title{
+font-size:35px;
+font-weight:bold;
 }
 
-.small{
-
-color:#ccc;
-
+.sub{
+opacity:.8;
 margin-bottom:20px;
-
 }
+
 
 /* INPUT */
 
 input{
 
-width:90%;
+width:100%;
 
 padding:12px;
 
-margin:8px;
+margin:8px 0;
 
 border-radius:10px;
 
 border:none;
 
-font-size:16px;
-
 }
+
 
 /* PASSWORD */
 
 .passBox{
-
 position:relative;
-
 }
 
 .eye{
 
 position:absolute;
-
-right:25px;
-
-top:18px;
-
+right:10px;
+top:14px;
 cursor:pointer;
-
 color:black;
 
 }
 
+
 /* ROLE */
 
 .role{
-
 display:flex;
-
-justify-content:space-around;
-
-margin:10px 0;
-
+margin-top:10px;
 }
 
 .role button{
 
-padding:10px 20px;
+flex:1;
 
-border-radius:10px;
+margin:3px;
+
+padding:10px;
 
 border:none;
 
-background:#111;
+border-radius:10px;
+
+background:#003366;
 
 color:white;
 
@@ -121,25 +117,26 @@ cursor:pointer;
 
 }
 
-.selected{
-
-background:#007bff !important;
-
+.active{
+background:#00ccff !important;
 }
 
-/* LOGIN BUTTON */
+
+/* LOGIN */
 
 .loginBtn{
 
-width:90%;
+width:100%;
 
 padding:14px;
+
+margin-top:10px;
 
 border:none;
 
 border-radius:12px;
 
-background:linear-gradient(90deg,#00c6ff,#0072ff);
+background:linear-gradient(90deg,#00ccff,#0066ff);
 
 color:white;
 
@@ -147,23 +144,21 @@ font-size:18px;
 
 cursor:pointer;
 
-margin-top:10px;
-
 }
 
-/* LOADING BAR */
 
-.loadBox{
+/* LOADING */
 
-width:90%;
+.load{
 
+width:100%;
 height:6px;
 
-background:#222;
-
-margin:10px auto;
+background:#002244;
 
 border-radius:10px;
+
+margin-top:10px;
 
 overflow:hidden;
 
@@ -171,29 +166,43 @@ display:none;
 
 }
 
-.loadBar{
+.bar{
 
 height:6px;
 
 width:0%;
 
-background:#00ff88;
+background:#00ff66;
 
-transition:2s;
+transition:2s linear;
 
 }
 
+
 /* REGISTER */
 
-.reg{
+.register{
 
 margin-top:15px;
 
-color:#aaa;
+padding:12px;
+
+width:100%;
+
+border:none;
+
+border-radius:12px;
+
+background:linear-gradient(90deg,#00cc66,#00994d);
+
+color:white;
+
+font-size:16px;
 
 cursor:pointer;
 
 }
+
 
 /* POPUP */
 
@@ -202,42 +211,31 @@ cursor:pointer;
 position:fixed;
 
 top:50%;
-
 left:50%;
 
 transform:translate(-50%,-50%);
 
-background:#222;
+background:#001122;
 
 padding:25px;
 
-border-radius:15px;
+border-radius:20px;
 
 display:none;
 
-width:280px;
+width:260px;
+
+color:white;
+
+text-align:center;
 
 box-shadow:0px 0px 20px black;
 
 }
 
-.popup h2{
-
-margin:10px;
-
-}
-
-.green{
-
-color:#00ff88;
-
-}
-
-.red{
-
-color:#ff4444;
-
-}
+.green{color:#00ff88;}
+.red{color:red;}
+.orange{color:orange;}
 
 .okBtn{
 
@@ -249,23 +247,11 @@ border:none;
 
 border-radius:10px;
 
+background:#007bff;
+
+color:white;
+
 cursor:pointer;
-
-}
-
-.okGreen{
-
-background:#00cc66;
-
-color:white;
-
-}
-
-.okRed{
-
-background:#ff4444;
-
-color:white;
 
 }
 
@@ -278,11 +264,19 @@ color:white;
 
 <div class="box">
 
-<h1>WELCOME</h1>
 
-<div class="small">
-Secure Print Portal
+<div class="title">
+
+WELCOME
+
 </div>
+
+<div class="sub">
+
+Secure Print Portal
+
+</div>
+
 
 
 <input id="user" placeholder="Username">
@@ -290,31 +284,33 @@ Secure Print Portal
 
 <div class="passBox">
 
-<input id="pass" type="password"
+<input id="pass"
+type="password"
 placeholder="Password">
 
 <span class="eye"
-onclick="togglePass()">
+onclick="eye()">
 👁
 </span>
 
 </div>
 
 
+
 <div class="role">
 
 <button id="sellerBtn"
-onclick="setRole('Seller')">
+onclick="setRole('seller')">
 Seller
 </button>
 
 <button id="adminBtn"
-onclick="setRole('Admin')">
+onclick="setRole('admin')">
 Admin
 </button>
 
 <button id="masterBtn"
-onclick="setRole('Master')">
+onclick="setRole('master')">
 Master
 </button>
 
@@ -322,31 +318,30 @@ Master
 
 
 
-<div class="loadBox"
-id="loadBox">
+<button class="loginBtn"
+onclick="startLogin()">
+LOGIN
+</button>
 
-<div class="loadBar"
-id="loadBar"></div>
+
+
+<div class="load"
+id="load">
+
+<div class="bar"
+id="bar"></div>
 
 </div>
 
 
 
-<button class="loginBtn"
-onclick="login()">
-
-LOGIN
-
-</button>
-
-
-<div class="reg"
+<button class="register"
 
 onclick="location='registration.html'">
 
 New Registration
 
-</div>
+</button>
 
 
 </div>
@@ -356,12 +351,10 @@ New Registration
 <div class="popup"
 id="popup">
 
-<h2 id="popTitle"></h2>
+<div id="msg"></div>
 
-<div id="popText"></div>
-
-<button id="popBtn"
-class="okBtn">
+<button class="okBtn"
+onclick="closePop()">
 
 OK
 
@@ -371,25 +364,108 @@ OK
 
 
 
-<script type="module">
+<script>
 
+/* ROLE */
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+let role="seller";
 
+function setRole(r){
 
-import {
+role=r;
 
-getFirestore,
-collection,
-getDocs,
-doc,
-getDoc
+sellerBtn.classList.remove("active");
+adminBtn.classList.remove("active");
+masterBtn.classList.remove("active");
+
+document.getElementById(r+"Btn")
+.classList.add("active");
 
 }
 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
+/* PASSWORD */
+
+function eye(){
+
+pass.type=
+pass.type=="password"?"text":"password";
+
+}
+
+
+/* POPUP */
+
+function popup(text,color){
+
+popupBox.style.display="block";
+
+msg.innerHTML="<h2 class='"+color+"'>"+text+"</h2>";
+
+}
+
+
+function closePop(){
+
+popupBox.style.display="none";
+
+load.style.display="none";
+
+bar.style.width="0%";
+
+}
+
+
+let popupBox=document.getElementById("popup");
+
+
+/* LOGIN */
+
+function startLogin(){
+
+load.style.display="block";
+
+bar.style.width="0%";
+
+setTimeout(()=>{
+
+bar.style.width="100%";
+
+},50);
+
+setTimeout(login,2000);
+
+}
+
+
+/* FIREBASE LOGIN */
+
+async function login(){
+
+let u=user.value;
+let p=pass.value;
+
+
+/* MASTER */
+
+if(role=="master"){
+
+popup("Master Coming Soon","orange");
+
+return;
+
+}
+
+
+/* LOAD FIREBASE */
+
+const app=await import(
+"https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js"
+);
+
+const fs=await import(
+"https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js"
+);
 
 
 const firebaseConfig={
@@ -403,201 +479,56 @@ projectId:"printportal-36ae0"
 };
 
 
-const app=initializeApp(firebaseConfig);
+const appInit=
+app.initializeApp(firebaseConfig);
 
-const db=getFirestore(app);
-
-
-window.role="Seller";
-
-
-window.setRole=function(r){
-
-role=r;
-
-sellerBtn.classList.remove("selected");
-
-adminBtn.classList.remove("selected");
-
-masterBtn.classList.remove("selected");
-
-
-if(r=="Seller")
-sellerBtn.classList.add("selected");
-
-if(r=="Admin")
-adminBtn.classList.add("selected");
-
-if(r=="Master")
-masterBtn.classList.add("selected");
-
-}
-
-
-
-setRole("Seller");
-
-
-
-window.togglePass=function(){
-
-pass.type=
-pass.type=="password"?
-"text":"password";
-
-}
-
-
-
-/* LOGIN */
-
-window.login=async function(){
-
-let u=user.value;
-
-let p=pass.value;
-
-
-if(u==""||p==""){
-
-alert("Fill Details");
-
-return;
-
-}
-
-
-
-/* START LOADING */
-
-loadBox.style.display="block";
-
-loadBar.style.width="0%";
-
-
-setTimeout(()=>{
-
-loadBar.style.width="100%";
-
-},50);
-
-
-
-setTimeout(async()=>{
-
-
-/* MASTER */
-
-if(role=="Master"){
-
-showPopup(
-
-"Coming Soon",
-
-"Master Panel Coming Soon",
-
-false
-
-);
-
-return;
-
-}
-
+const db=
+fs.getFirestore(appInit);
 
 
 /* ADMIN */
 
-if(role=="Admin"){
+if(role=="admin"){
 
 const docRef=
-doc(db,"admin","login");
+fs.doc(db,"admin","login");
 
 const snap=
-await getDoc(docRef);
-
+await fs.getDoc(docRef);
 
 let a=snap.data();
 
+if(a.user==u && a.pass==p){
 
-if(
-a.user.trim()==u.trim()
-&&
-a.pass.trim()==p.trim()
-){
+popup("Login Successful","green");
 
-showPopup(
-
-"Success",
-
-"Login Successfully",
-
-true,
-
-"admin.html"
-
-);
-
-return;
-
-}else{
-
-showPopup(
-
-"Wrong Username Password",
-
-"Login Failed",
-
-false
-
-);
+setTimeout(()=>location="admin.html",1500);
 
 return;
 
 }
 
 }
-
 
 
 /* SELLER */
 
-if(role=="Seller"){
-
+if(role=="seller"){
 
 let ok=false;
 
 const snap=
-await getDocs(collection(db,"seller"));
-
+await fs.getDocs(fs.collection(db,"seller"));
 
 snap.forEach((d)=>{
 
-
 let s=d.data();
 
-
-if(
-
-s.user.trim().toLowerCase()
-==
-u.trim().toLowerCase()
-
-&&
-
-s.pass.trim()==p.trim()
-
-&&
-
-s.active===true
-
-){
+if(s.user==u && s.pass==p && s.active){
 
 ok=true;
 
 localStorage.currentSeller=d.id;
-
-localStorage.login="seller";
 
 }
 
@@ -606,94 +537,22 @@ localStorage.login="seller";
 
 if(ok){
 
-showPopup(
+popup("Login Successful","green");
 
-"Success",
+setTimeout(()=>location="seller.html",1500);
 
-"Login Successfully",
+return;
 
-true,
-
-"seller.html"
-
-);
-
-}else{
-
-showPopup(
-
-"Wrong Username Password",
-
-"Login Failed",
-
-false
-
-);
+}
 
 }
 
 
+popup("Login Failed","red");
 
 }
-
-
-
-},2000);
-
-
-
-}
-
-function showPopup(title,text,success,page){
-
-popup.style.display="block";
-
-
-popTitle.innerHTML=title;
-
-popText.innerHTML=text;
-
-
-if(success){
-
-popTitle.className="green";
-
-popBtn.className="okBtn okGreen";
-
-}else{
-
-popTitle.className="red";
-
-popBtn.className="okBtn okRed";
-
-}
-
-
-
-popBtn.onclick=function(){
-
-
-popup.style.display="none";
-
-loadBox.style.display="none";
-
-loadBar.style.width="0%";
-
-
-if(success && page)
-
-location=page;
-
-
-}
-
-
-
-}
-
 
 </script>
-
 
 </body>
 </html>
