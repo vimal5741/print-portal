@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Check Registration Status</title>
+<meta name="viewport" content="width=device-width">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(150deg,#020024,#090979,#00d4ff);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+}
+
+.box{
+width:380px;
+background:rgba(0,0,0,0.5);
+padding:25px;
+border-radius:20px;
+}
+
+.title{
+font-size:28px;
+text-align:center;
+font-weight:bold;
+}
+
+.sub{
+text-align:center;
+margin-bottom:15px;
+color:#ddd;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:7px 0;
+border-radius:10px;
+border:none;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#00c6ff,#0072ff);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.timeline{
+margin-top:20px;
+text-align:left;
+}
+
+.step{
+padding:10px;
+margin:8px 0;
+background:rgba(255,255,255,0.1);
+border-radius:10px;
+}
+
+.done{
+color:#00ff88;
+}
+
+.wait{
+color:orange;
+}
+
+.fail{
+color:red;
+}
+
+.msg{
+margin-top:15px;
+padding:10px;
+background:rgba(255,255,255,0.1);
+border-radius:10px;
+}
+
+.back{
+margin-top:10px;
+text-align:center;
+cursor:pointer;
+color:#ddd;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="title">
+Application Status
+</div>
+
+<div class="sub">
+Secure Print Portal
+</div>
+
+<input id="user" placeholder="Username">
+<input id="mobile" placeholder="Mobile Number">
+
+<button onclick="checkStatus()">
+Check Status
+</button>
+
+<div id="result"></div>
+
+<div class="back"
+onclick="location='index.html'">
+Back to Login
+</div>
+
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+
+window.checkStatus=async function(){
+
+let u=user.value.trim();
+let m=mobile.value.trim();
+
+if(u=="" || m==""){
+
+alert("Enter Username & Mobile");
+return;
+
+}
+
+const snap=await getDocs(collection(db,"registration"));
+
+let found=null;
+
+snap.forEach((d)=>{
+
+let r=d.data();
+
+if(r.user==u && r.mobile==m){
+found=r;
+}
+
+});
+
+if(!found){
+
+result.innerHTML="<div class='msg'>No Registration Found</div>";
+return;
+
+}
+
+/* TIME LOGIC */
+
+let now=Date.now();
+let diff=(now-found.time)/60000;
+
+let step1="done";
+let step2="done";
+let step3="wait";
+let step4="wait";
+
+if(diff>5){
+step3="done";
+}
+
+if(found.status=="approved"){
+step4="done";
+}
+
+if(found.status=="rejected"){
+step4="fail";
+}
+
+/* MESSAGE */
+
+let msg="";
+
+if(found.status=="approved"){
+msg=found.message || "Your account has been approved. You can login now.";
+}
+
+if(found.status=="rejected"){
+msg=found.message || "Your registration was rejected.";
+}
+
+if(found.status=="pending"){
+msg="Your request is being processed.";
+}
+
+/* UI */
+
+result.innerHTML=
+
+`
+<div class="timeline">
+
+<div class="step ${step1}">
+✔ Registration Submitted
+</div>
+
+<div class="step ${step2}">
+✔ Checking Details
+</div>
+
+<div class="step ${step3}">
+⏳ Processing Request
+</div>
+
+<div class="step ${step4}">
+${found.status=="rejected"?"❌ Rejected":"✔ Approved"}
+</div>
+
+</div>
+
+<div class="msg">
+${msg}
+</div>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>
