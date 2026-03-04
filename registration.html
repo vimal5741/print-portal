@@ -19,22 +19,312 @@ align-items:center;
 color:white;
 }
 
-
-/* BOX */
-
 .box{
-
 width:380px;
 background:rgba(0,0,0,0.5);
 padding:25px;
 border-radius:20px;
-
 position:relative;
+}
+
+.back{
+position:absolute;
+left:15px;
+top:15px;
+cursor:pointer;
+font-size:14px;
+color:#ddd;
+}
+
+.title{
+font-size:30px;
+text-align:center;
+font-weight:bold;
+}
+
+.sub{
+text-align:center;
+margin-bottom:15px;
+color:#ddd;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:7px 0;
+border-radius:10px;
+border:none;
+}
+
+.passBox{
+position:relative;
+}
+
+.eye{
+position:absolute;
+right:10px;
+top:14px;
+cursor:pointer;
+color:black;
+}
+
+.role{
+display:flex;
+margin-top:10px;
+}
+
+.role button{
+flex:1;
+margin:3px;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#003366;
+color:white;
+cursor:pointer;
+}
+
+.active{
+background:#00cc99 !important;
+}
+
+.register{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#00c6ff,#0072ff);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.loginLink{
+text-align:center;
+margin-top:10px;
+cursor:pointer;
+color:#ddd;
+}
+
+.loginLink:hover{
+color:white;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="box">
+
+<div class="back" onclick="location='index.html'">
+⬅ Back to Login
+</div>
+
+<div class="title">WELCOME</div>
+
+<div class="sub">Secure Print Portal</div>
+
+<input id="name" placeholder="Full Name">
+
+<input id="user" placeholder="Username">
+
+<input id="mobile" placeholder="Mobile Number">
+
+<div class="passBox">
+<input id="pass" type="password" placeholder="Password">
+<span class="eye" onclick="showPass('pass')">👁</span>
+</div>
+
+<div class="passBox">
+<input id="pass2" type="password" placeholder="Confirm Password">
+<span class="eye" onclick="showPass('pass2')">👁</span>
+</div>
+
+<div class="role">
+
+<button id="seller" onclick="setRole('seller')">
+Seller
+</button>
+
+<button id="admin" onclick="setRole('admin')">
+Admin
+</button>
+
+<button id="master" onclick="setRole('master')">
+Master
+</button>
+
+</div>
+
+<button class="register" onclick="registerUser()">
+Register
+</button>
+
+<div class="loginLink" onclick="location='index.html'">
+Back to Login
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+let role="";
+
+
+window.setRole=function(r){
+
+role=r;
+
+seller.classList.remove("active");
+admin.classList.remove("active");
+master.classList.remove("active");
+
+document.getElementById(r).classList.add("active");
+
+if(r=="master"){
+alert("Master Panel Coming Soon");
+}
 
 }
 
 
-/* BACK BUTTON */
+/* REGISTER USER */
+
+window.registerUser=async function(){
+
+let n=name.value.trim();
+let u=user.value.trim();
+let m=mobile.value.trim();
+let p=pass.value.trim();
+let p2=pass2.value.trim();
+
+if(n==""||u==""||m==""||p==""||p2==""||role==""){
+
+alert("Fill All Fields");
+return;
+
+}
+
+if(m.length<10){
+
+alert("Invalid Mobile Number");
+return;
+
+}
+
+if(p.length<4){
+
+alert("Password Minimum 4 Characters");
+return;
+
+}
+
+if(p!=p2){
+
+alert("Password Not Match");
+return;
+
+}
+
+if(role=="master"){
+
+alert("Master Panel Coming Soon");
+return;
+
+}
+
+
+/* CHECK DUPLICATE USER */
+
+const snap=await getDocs(collection(db,"registration"));
+
+let exist=false;
+
+snap.forEach((d)=>{
+
+let r=d.data();
+
+if(r.user==u){
+exist=true;
+}
+
+});
+
+if(exist){
+
+alert("Username Already Exists");
+return;
+
+}
+
+
+/* SAVE DATA */
+
+await addDoc(collection(db,"registration"),{
+
+name:n,
+user:u,
+mobile:m,
+pass:p,
+role:role,
+status:"pending",
+time:Date.now()
+
+});
+
+alert("Registration Submitted");
+
+location="index.html";
+
+}
+
+</script>
+
+
+<script>
+
+function showPass(id){
+
+let x=document.getElementById(id);
+
+if(x.type=="password")
+x.type="text";
+else
+x.type="password";
+
+}
+
+</script>
+
+
+</body>
+</html>/* BACK BUTTON */
 
 .back{
 
