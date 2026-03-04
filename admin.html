@@ -7,6 +7,46 @@
 
 <meta name="viewport" content="width=device-width">
 
+<script>
+
+/* LOGIN PROTECTION */
+
+if(localStorage.getItem("login")!="true"){
+
+window.location.replace("index.html");
+
+}
+
+
+/* AUTO LOGOUT AFTER 1 HOUR */
+
+let session=localStorage.getItem("session");
+
+if(session){
+
+let now=Date.now();
+
+let diff=(now-Number(session))/1000;
+
+if(diff>3600){
+
+localStorage.clear();
+
+window.location.replace("index.html");
+
+}
+
+}
+
+/* BACK BUTTON BLOCK */
+
+window.history.pushState(null,null,location.href);
+window.onpopstate=function(){
+window.history.go(1);
+}
+
+</script>
+
 <style>
 
 body{
@@ -15,39 +55,31 @@ margin:0;
 background:#f0f2f5;
 }
 
-
 /* HEADER */
 
 .header{
-
 background:#003366;
 color:white;
 padding:15px;
 font-size:22px;
 text-align:center;
 position:relative;
-
 }
-
 
 /* DP ICON */
 
 .dp{
-
 position:absolute;
 right:20px;
 top:10px;
 width:45px;
 cursor:pointer;
 border-radius:50%;
-
 }
-
 
 /* MENU */
 
 .menu{
-
 position:absolute;
 right:20px;
 top:65px;
@@ -57,27 +89,20 @@ border-radius:8px;
 display:none;
 width:200px;
 z-index:5;
-
 }
 
 .menu div{
-
 padding:12px;
 cursor:pointer;
-
 }
 
 .menu div:hover{
-
 background:#eee;
-
 }
-
 
 /* BOX */
 
 .box{
-
 background:white;
 width:360px;
 margin:20px auto;
@@ -85,91 +110,67 @@ padding:20px;
 border-radius:10px;
 box-shadow:0px 0px 10px gray;
 text-align:center;
-
 }
 
-
 input{
-
 width:90%;
 padding:10px;
 margin:5px;
 border-radius:5px;
 border:1px solid gray;
-
 }
 
-
 button{
-
 padding:8px 15px;
 background:#003366;
 color:white;
 border:none;
 border-radius:5px;
 cursor:pointer;
-
 }
 
-
 table{
-
 width:95%;
 margin:auto;
 background:white;
 border-radius:10px;
 overflow:hidden;
 box-shadow:0px 0px 10px gray;
-
 }
 
-
 th{
-
 background:#003366;
 color:white;
 padding:10px;
-
 }
-
 
 td{
-
 padding:10px;
 border-bottom:1px solid #ddd;
-
 }
 
-
 .green{
-
 background:green;
 color:white;
 padding:5px 10px;
 border-radius:6px;
 cursor:pointer;
-
 }
 
-
 .red{
-
 background:red;
 color:white;
 padding:5px 10px;
 border-radius:6px;
 cursor:pointer;
-
 }
 
 .reset{
-
 background:orange;
 color:white;
 padding:5px 10px;
 border-radius:6px;
 cursor:pointer;
-
 }
 
 </style>
@@ -177,8 +178,6 @@ cursor:pointer;
 </head>
 
 <body>
-
-
 
 <div class="header">
 
@@ -190,52 +189,37 @@ onclick="menu()">
 
 </div>
 
-
-
 <div class="menu" id="menu">
 
 <div onclick="changeAdmin()">
-
 Change Admin Login
-
 </div>
 
 <div onclick="logout()">
-
 Logout
-
 </div>
 
 </div>
-
-
 
 <div class="box">
 
 <h3>Create Seller</h3>
 
 <input id="user" placeholder="Username">
-
 <input id="pass" placeholder="Temporary Password">
-
 <input id="exp" type="date">
 
 <br>
 
 <button onclick="createSeller()">
-
 Create Seller
-
 </button>
 
 </div>
 
-
-
 <table id="tbl">
 
 <tr>
-
 <th>User</th>
 <th>Password</th>
 <th>PDF</th>
@@ -243,64 +227,43 @@ Create Seller
 <th>Status</th>
 <th>Reset</th>
 <th>Delete</th>
-
 </tr>
 
 </table>
 
-
-
 <script type="module">
 
 import { initializeApp }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
-
 getFirestore,
 collection,
 addDoc,
 getDocs,
 deleteDoc,
 doc,
-updateDoc,
-getDoc
-
+updateDoc
 }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
-
 const firebaseConfig={
-
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
-
 authDomain:"printportal-36ae0.firebaseapp.com",
-
 projectId:"printportal-36ae0"
-
 };
 
-
-
 const app=initializeApp(firebaseConfig);
-
 const db=getFirestore(app);
-
-
 
 load();
 
-
+/* LOAD SELLER DATA */
 
 async function load(){
 
 tbl.innerHTML=`
-
 <tr>
-
 <th>User</th>
 <th>Password</th>
 <th>PDF</th>
@@ -308,9 +271,7 @@ tbl.innerHTML=`
 <th>Status</th>
 <th>Reset</th>
 <th>Delete</th>
-
 </tr>
-
 `;
 
 const snap=await getDocs(collection(db,"seller"));
@@ -322,115 +283,85 @@ let s=d.data();
 let row=tbl.insertRow();
 
 row.insertCell(0).innerHTML=s.user;
-
 row.insertCell(1).innerHTML=s.pass;
-
 row.insertCell(2).innerHTML=s.pdf||0;
-
 row.insertCell(3).innerHTML=s.expiry;
 
-
+/* STATUS */
 
 let st=row.insertCell(4);
 
 if(s.active){
-
 st.innerHTML="<span class='green' onclick='toggle(\""+d.id+"\",false)'>Active</span>";
-
 }else{
-
 st.innerHTML="<span class='red' onclick='toggle(\""+d.id+"\",true)'>Off</span>";
-
 }
 
-
-
-/* RESET PASSWORD */
+/* RESET */
 
 row.insertCell(5).innerHTML=
-
 "<span class='reset' onclick='resetPass(\""+d.id+"\")'>Reset</span>";
 
-
+/* DELETE */
 
 row.insertCell(6).innerHTML=
-
 "<button onclick='del(\""+d.id+"\")'>Delete</button>";
 
 });
 
 }
 
-
-
 /* CREATE SELLER */
 
 window.createSeller=async function(){
 
-let u=user.value;
-
-let p=pass.value;
-
+let u=user.value.trim();
+let p=pass.value.trim();
 let e=exp.value;
 
-
-
 if(u==""||p==""||e==""){
-
 alert("Fill All Fields");
-
 return;
-
 }
 
-
 await addDoc(collection(db,"seller"),{
-
 user:u,
 pass:p,
 expiry:e,
 active:true,
 pdf:0,
 temp:true
-
 });
-
 
 alert("Seller Created With Temporary Password");
 
-load();
+user.value="";
+pass.value="";
+exp.value="";
 
+load();
 }
 
-
-
-/* DELETE */
+/* DELETE SELLER */
 
 window.del=async function(id){
 
 await deleteDoc(doc(db,"seller",id));
-
 load();
 
 }
 
-
-
-/* ACTIVE OFF */
+/* ACTIVE / OFF */
 
 window.toggle=async function(id,val){
 
 await updateDoc(doc(db,"seller",id),{
-
 active:val
-
 });
 
 load();
 
 }
-
-
 
 /* RESET PASSWORD */
 
@@ -441,10 +372,8 @@ let p=prompt("Enter New Password");
 if(!p) return;
 
 await updateDoc(doc(db,"seller",id),{
-
 pass:p,
 temp:true
-
 });
 
 alert("Password Reset Done");
@@ -453,70 +382,50 @@ load();
 
 }
 
-
-
 /* CHANGE ADMIN LOGIN */
 
 window.changeAdmin=async function(){
 
 let u=prompt("New Admin Username");
-
 let p=prompt("New Admin Password");
 
 if(!u || !p) return;
 
-
-
 await updateDoc(doc(db,"admin","login"),{
-
 user:u,
 pass:p
-
 });
-
 
 alert("Admin Login Updated");
 
 }
 
-
-
 </script>
-
-
 
 <script>
 
+/* PROFILE MENU */
 
 function menu(){
 
 let m=document.getElementById("menu");
 
 m.style.display=
-
 m.style.display=="block"
-
 ?"none":"block";
 
 }
-
-
 
 /* LOGOUT */
 
 function logout(){
 
 localStorage.clear();
-
-location="index.html";
+window.location.replace("index.html");
 
 }
 
-
 </script>
 
-
-
 </body>
-
 </html>
