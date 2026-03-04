@@ -1,31 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<title>Print Portal Register</title>
-
-<meta name="viewport" content="width=device-width">
-
-<style>
+<!DOCTYPE html><html>
+<head><title>Print Portal Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
 
 body{
 margin:0;
 font-family:Arial;
 background:linear-gradient(150deg,#020024,#090979,#00d4ff);
-height:100vh;
+min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
 color:white;
+padding:20px;
 }
 
+/* BOX */
+
 .box{
-width:380px;
-background:rgba(0,0,0,0.5);
+width:90%;
+max-width:380px;
+background:rgba(0,0,0,0.55);
 padding:25px;
 border-radius:20px;
 position:relative;
+box-shadow:0px 0px 25px rgba(0,0,0,0.6);
 }
+
+/* BACK */
 
 .back{
 position:absolute;
@@ -35,6 +36,12 @@ cursor:pointer;
 font-size:14px;
 color:#ddd;
 }
+
+.back:hover{
+color:white;
+}
+
+/* TITLE */
 
 .title{
 font-size:30px;
@@ -48,13 +55,18 @@ margin-bottom:15px;
 color:#ddd;
 }
 
+/* INPUT */
+
 input{
 width:100%;
 padding:12px;
 margin:7px 0;
 border-radius:10px;
 border:none;
+font-size:15px;
 }
+
+/* PASSWORD */
 
 .passBox{
 position:relative;
@@ -67,6 +79,8 @@ top:14px;
 cursor:pointer;
 color:black;
 }
+
+/* ROLE */
 
 .role{
 display:flex;
@@ -82,96 +96,69 @@ border-radius:10px;
 background:#003366;
 color:white;
 cursor:pointer;
+font-size:15px;
 }
 
 .active{
 background:#00cc99 !important;
 }
 
+/* REGISTER BUTTON */
+
 .register{
 width:100%;
-padding:12px;
+padding:13px;
 margin-top:15px;
 border:none;
-border-radius:10px;
-background:linear-gradient(90deg,#00c6ff,#0072ff);
+border-radius:12px;
+background:linear-gradient(90deg,#00d4ff,#0072ff);
 color:white;
-font-size:16px;
+font-size:17px;
 cursor:pointer;
+box-shadow:0px 0px 15px rgba(0,0,0,0.5);
 }
+
+.register:hover{
+opacity:.9;
+}
+
+/* LOGIN LINK */
 
 .loginLink{
 text-align:center;
 margin-top:10px;
 cursor:pointer;
 color:#ddd;
+font-size:14px;
 }
 
 .loginLink:hover{
 color:white;
 }
 
-</style>
-
-</head>
-
-
-<body>
-
-<div class="box">
-
-<div class="back" onclick="location='index.html'">
+</style></head><body><div class="box"><div class="back" onclick="location='index.html'">
 ⬅ Back to Login
-</div>
-
-<div class="title">WELCOME</div>
-
-<div class="sub">Secure Print Portal</div>
-
-<input id="name" placeholder="Full Name">
-
-<input id="user" placeholder="Username">
-
-<input id="mobile" placeholder="Mobile Number">
-
-<div class="passBox">
+</div><div class="title">
+WELCOME
+</div><div class="sub">
+Secure Print Portal
+</div><input id="name" placeholder="Full Name"><input id="user" placeholder="Username"><input id="mobile" placeholder="Mobile Number"><div class="passBox">
 <input id="pass" type="password" placeholder="Password">
 <span class="eye" onclick="showPass('pass')">👁</span>
-</div>
-
-<div class="passBox">
+</div><div class="passBox">
 <input id="pass2" type="password" placeholder="Confirm Password">
 <span class="eye" onclick="showPass('pass2')">👁</span>
-</div>
-
-<div class="role">
-
-<button id="seller" onclick="setRole('seller')">
+</div><div class="role"><button id="seller" onclick="setRole('seller')">
 Seller
-</button>
-
-<button id="admin" onclick="setRole('admin')">
+</button><button id="admin" onclick="setRole('admin')">
 Admin
-</button>
-
-<button id="master" onclick="setRole('master')">
+</button><button id="master" onclick="setRole('master')">
 Master
-</button>
-
-</div>
-
-<button class="register" onclick="registerUser()">
+</button></div><button class="register" onclick="registerUser()">
 Register
-</button>
-
-<div class="loginLink" onclick="location='index.html'">
+</button><div class="loginLink" onclick="location='index.html'">
 Back to Login
-</div>
-
-</div>
-
-
-<script type="module">
+</div></div><script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
@@ -179,11 +166,9 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import {
 getFirestore,
 collection,
-addDoc,
-getDocs
+addDoc
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
 
 const firebaseConfig={
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
@@ -196,51 +181,43 @@ const db=getFirestore(app);
 
 let role="";
 
+/* ROLE SELECT */
 
 window.setRole=function(r){
 
 role=r;
 
-seller.classList.remove("active");
-admin.classList.remove("active");
-master.classList.remove("active");
+document.getElementById("seller").classList.remove("active");
+document.getElementById("admin").classList.remove("active");
+document.getElementById("master").classList.remove("active");
 
 document.getElementById(r).classList.add("active");
 
-if(r=="master"){
+if(r==="master"){
 alert("Master Panel Coming Soon");
 }
 
 }
 
-
-/* REGISTER USER */
+/* REGISTER */
 
 window.registerUser=async function(){
 
-let n=name.value.trim();
-let u=user.value.trim();
-let m=mobile.value.trim();
-let p=pass.value.trim();
-let p2=pass2.value.trim();
+let n=document.getElementById("name").value || "";
+let u=document.getElementById("user").value || "";
+let m=document.getElementById("mobile").value || "";
+let p=document.getElementById("pass").value || "";
+let p2=document.getElementById("pass2").value || "";
+
+n=n.trim();
+u=u.trim();
+m=m.trim();
+p=p.trim();
+p2=p2.trim();
 
 if(n==""||u==""||m==""||p==""||p2==""||role==""){
 
 alert("Fill All Fields");
-return;
-
-}
-
-if(m.length<10){
-
-alert("Invalid Mobile Number");
-return;
-
-}
-
-if(p.length<4){
-
-alert("Password Minimum 4 Characters");
 return;
 
 }
@@ -258,33 +235,6 @@ alert("Master Panel Coming Soon");
 return;
 
 }
-
-
-/* CHECK DUPLICATE USER */
-
-const snap=await getDocs(collection(db,"registration"));
-
-let exist=false;
-
-snap.forEach((d)=>{
-
-let r=d.data();
-
-if(r.user==u){
-exist=true;
-}
-
-});
-
-if(exist){
-
-alert("Username Already Exists");
-return;
-
-}
-
-
-/* SAVE DATA */
 
 await addDoc(collection(db,"registration"),{
 
@@ -304,10 +254,7 @@ location="index.html";
 
 }
 
-</script>
-
-
-<script>
+</script><script>
 
 function showPass(id){
 
@@ -320,8 +267,5 @@ x.type="password";
 
 }
 
-</script>
-
-
-</body>
+</script></body>
 </html>
