@@ -1,136 +1,176 @@
-<!DOCTYPE html><html><head><title>Change Password</title><meta name="viewport" content="width=device-width"><style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Change Password</title>
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+/* LOGIN SECURITY */
+
+if(localStorage.getItem("login")!="true" 
+|| localStorage.getItem("role")!="seller"){
+
+window.location="index.html";
+
+}
+
+</script>
+
+<style>
 
 body{
-
 font-family:Arial;
-
 background:#f0f4f8;
-
 text-align:center;
-
 }
-
 
 .box{
-
 background:white;
-
 width:350px;
-
 margin:150px auto;
-
 padding:25px;
-
 border-radius:10px;
-
 box-shadow:0px 0px 10px gray;
-
 }
-
 
 input{
-
 width:90%;
-
 padding:10px;
-
 margin:10px;
-
 font-size:16px;
-
 }
-
 
 button{
-
 padding:10px 20px;
-
 background:#003366;
-
 color:white;
-
 border:none;
-
+cursor:pointer;
 }
 
+</style>
 
-</style></head><body><div class="box"><h3>Change Password</h3><input id="p1"
+</head>
 
+<body>
+
+<div class="box">
+
+<h3>Change Password</h3>
+
+<input id="oldPass"
 type="password"
+placeholder="Old Password">
 
+<input id="p1"
+type="password"
 placeholder="New Password">
 
 <input id="p2"
-
 type="password"
-
 placeholder="Confirm Password">
 
-<br><button onclick="savePass()">Save Password
+<br>
 
-</button></div><script>
+<button onclick="savePass()">
+Save Password
+</button>
+
+</div>
 
 
-function savePass(){
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+updateDoc
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
+const firebaseConfig={
+
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+
+
+window.savePass=async function(){
+
+let old=document.getElementById("oldPass").value;
 let p1=document.getElementById("p1").value;
-
 let p2=document.getElementById("p2").value;
 
 
+/* PASSWORD CHECK */
 
-if(p1.length<6 || p1.length>15){
+if(p1.length<4){
 
-alert("Password must be 6-15 characters");
-
+alert("Password minimum 4 characters");
 return;
 
 }
-
 
 if(p1!=p2){
 
 alert("Password Not Match");
-
 return;
 
 }
 
 
+/* FIREBASE DATA */
 
-let sellers=
-JSON.parse(localStorage.sellers);
+let id=localStorage.currentSeller;
+
+const ref=doc(db,"seller",id);
+
+const snap=await getDoc(ref);
+
+let data=snap.data();
 
 
-let user=
-localStorage.currentSeller;
+/* OLD PASSWORD VERIFY */
 
+if(old!=data.pass){
 
-for(let s of sellers){
-
-if(s.user==user){
-
-s.pass=p1;
-
-s.reset=false;
+alert("Old Password Wrong");
+return;
 
 }
 
-}
 
+/* UPDATE PASSWORD */
 
-localStorage.sellers=
-JSON.stringify(sellers);
+await updateDoc(ref,{
 
+pass:p1,
+temp:false
 
-alert("Password Changed");
+});
 
+alert("Password Changed Successfully");
 
 window.location="seller.html";
 
-
 }
 
+</script>
 
-</script></body></html>
+</body>
+</html>
