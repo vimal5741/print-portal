@@ -7,6 +7,40 @@
 
 <meta name="viewport" content="width=device-width">
 
+<script>
+
+/* LOGIN PROTECTION */
+
+if(localStorage.getItem("login")!="true"){
+
+window.location.replace("index.html");
+
+}
+
+
+/* AUTO LOGOUT AFTER 1 HOUR */
+
+let session=localStorage.getItem("session");
+
+if(session){
+
+let now=Date.now();
+
+let diff=(now-Number(session))/1000;
+
+if(diff>3600){
+
+localStorage.clear();
+
+window.location.replace("index.html");
+
+}
+
+}
+
+</script>
+
+
 <style>
 
 body{
@@ -124,13 +158,11 @@ cursor:pointer;
 
 }
 
-
 .card:hover{
 
 transform:scale(1.05);
 
 }
-
 
 .coming{
 
@@ -213,58 +245,24 @@ Welcome Seller Panel
 
 <div class="container">
 
-
-<div class="card"
-
-onclick="openAadhar()">
-
+<div class="card" onclick="openAadhar()">
 Aadhaar Card
-
 </div>
 
-
-
 <div class="card">
-
 Voter Card
-
-<div class="coming">
-
-Coming Soon
-
+<div class="coming">Coming Soon</div>
 </div>
-
-</div>
-
-
 
 <div class="card">
-
 E-Shram Card
-
-<div class="coming">
-
-Coming Soon
-
+<div class="coming">Coming Soon</div>
 </div>
-
-</div>
-
-
 
 <div class="card">
-
 Ayushman Card
-
-<div class="coming">
-
-Coming Soon
-
+<div class="coming">Coming Soon</div>
 </div>
-
-</div>
-
-
 
 </div>
 
@@ -309,7 +307,17 @@ const db=getFirestore(app);
 let sellerID=localStorage.currentSeller;
 
 
-/* LOAD SELLER */
+/* INVALID SESSION CHECK */
+
+if(!sellerID){
+
+window.location.replace("index.html");
+
+}
+
+
+
+/* LOAD SELLER DATA */
 
 const snap=await getDoc(doc(db,"seller",sellerID));
 
@@ -317,33 +325,21 @@ let s=snap.data();
 
 
 
-/* USERNAME SHOW */
+/* SHOW USER DATA */
 
 document.getElementById("username").innerHTML=s.user;
 
-document.getElementById("sellerName").innerHTML=
+document.getElementById("sellerName").innerHTML="User : "+s.user;
 
-"User : "+s.user;
+document.getElementById("validity").innerHTML="Validity : "+s.expiry;
 
-
-
-document.getElementById("validity").innerHTML=
-
-"Validity : "+s.expiry;
-
-
-
-document.getElementById("pdfcount").innerHTML=
-
-"PDF : "+(s.pdf||0);
+document.getElementById("pdfcount").innerHTML="PDF : "+(s.pdf||0);
 
 
 
 /* EXPIRY CHECK */
 
-let today=new Date().toISOString().split('T')[0];
-
-if(s.expiry<today){
+if(new Date(s.expiry) < new Date()){
 
 alert("Your ID Expired");
 
@@ -353,15 +349,11 @@ logout();
 
 
 
-/* TEMP PASSWORD */
+/* TEMP PASSWORD ALERT */
 
 if(s.temp){
 
-alert(
-
-"Temporary Password Detected\nChange Password Now"
-
-);
+alert("Temporary Password Detected\nChange Password Now");
 
 }
 
@@ -371,7 +363,7 @@ alert(
 
 window.changePass=async function(){
 
-let p=prompt("New Password");
+let p=prompt("Enter New Password");
 
 if(!p) return;
 
@@ -384,14 +376,13 @@ temp:false
 
 });
 
-
 alert("Password Changed");
 
 }
 
 
 
-/* OPEN AADHAR */
+/* OPEN AADHAR PAGE */
 
 window.openAadhar=function(){
 
@@ -399,14 +390,13 @@ location="aadhar.html";
 
 }
 
-
-
 </script>
 
 
 
 <script>
 
+/* PROFILE MENU */
 
 function menu(){
 
@@ -421,15 +411,15 @@ m.style.display=="block"
 }
 
 
+/* LOGOUT */
 
 function logout(){
 
 localStorage.clear();
 
-location="index.html";
+window.location.replace("index.html");
 
 }
-
 
 </script>
 
