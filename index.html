@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
 <title>PRINT PORTAL</title>
-<meta name="viewport" content="width=device-width">
-
-<style>
+<meta name="viewport" content="width=device-width"><style>
 
 body{
 margin:0;
@@ -108,6 +105,20 @@ font-size:16px;
 cursor:pointer;
 }
 
+/* STATUS BUTTON */
+
+.status{
+margin-top:10px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#ffaa00,#ff6600);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
 .popup{
 position:fixed;
 top:50%;
@@ -137,61 +148,28 @@ color:white;
 cursor:pointer;
 }
 
-</style>
-</head>
-
-<body>
-
-<div class="box">
-
-<div class="title">WELCOME</div>
-<div class="sub">Secure Print Portal</div>
-
-<input id="user" placeholder="Username">
-
-<div class="passBox">
+</style></head><body><div class="box"><div class="title">WELCOME</div>
+<div class="sub">Secure Print Portal</div><input id="user" placeholder="Username"><div class="passBox">
 <input id="pass" type="password" placeholder="Password">
 <span class="eye" onclick="eye()">👁</span>
-</div>
-
-<div class="role">
-
-<button id="sellerBtn" class="active" onclick="setRole('seller')">
+</div><div class="role"><button id="sellerBtn" class="active" onclick="setRole('seller')">
 Seller
-</button>
-
-<button id="adminBtn" onclick="setRole('admin')">
+</button><button id="adminBtn" onclick="setRole('admin')">
 Admin
-</button>
-
-<button id="masterBtn" onclick="setRole('master')">
+</button><button id="masterBtn" onclick="setRole('master')">
 Master
-</button>
-
-</div>
-
-<button class="loginBtn" onclick="startLogin()">
+</button></div><button class="loginBtn" onclick="startLogin()">
 LOGIN
-</button>
-
-<div class="load" id="load">
+</button><div class="load" id="load">
 <div class="bar" id="bar"></div>
-</div>
-
-<button class="register" onclick="location='registration.html'">
+</div><button class="register" onclick="location='registration.html'">
 New Registration
-</button>
-
-</div>
-
-
-<div class="popup" id="popup">
+</button><button class="status" onclick="location='status.html'">
+Check Registration Status
+</button></div><div class="popup" id="popup">
 <div id="msg"></div>
 <button class="okBtn" onclick="closePop()">OK</button>
-</div>
-
-
-<script type="module">
+</div><script type="module">
 
 import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
@@ -205,7 +183,6 @@ getDocs
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
 const firebaseConfig={
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 authDomain:"printportal-36ae0.firebaseapp.com",
@@ -215,11 +192,7 @@ projectId:"printportal-36ae0"
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
-
 let role="seller";
-
-
-/* ROLE SELECT */
 
 window.setRole=function(r){
 
@@ -233,30 +206,17 @@ document.getElementById(r+"Btn").classList.add("active");
 
 }
 
-
-/* PASSWORD SHOW */
-
 window.eye=function(){
-
 pass.type=pass.type=="password"?"text":"password";
-
 }
-
-
-/* CLOSE POPUP */
 
 window.closePop=function(){
 
 popup.style.display="none";
-
 load.style.display="none";
-
 bar.style.width="0%";
 
 }
-
-
-/* LOGIN LOADING */
 
 window.startLogin=function(){
 
@@ -276,32 +236,19 @@ setTimeout(login,2000);
 
 }
 
-
-/* LOGIN SYSTEM */
-
 async function login(){
 
 let u=user.value.trim();
 let p=pass.value.trim();
 
-
-/* MASTER */
-
 if(role=="master"){
-
 popupFail("Master Panel Coming Soon");
-
 return;
-
 }
-
-
-/* ADMIN LOGIN */
 
 if(role=="admin"){
 
 const snap=await getDoc(doc(db,"admin","login"));
-
 let a=snap.data();
 
 if(a && a.user==u && a.pass==p){
@@ -311,20 +258,15 @@ localStorage.setItem("role","admin");
 localStorage.setItem("session",Date.now());
 
 popupSuccess("admin.html");
-
 return;
 
 }
 
 }
 
-
-/* SELLER LOGIN */
-
 if(role=="seller"){
 
 const snap=await getDocs(collection(db,"seller"));
-
 let found=false;
 
 snap.forEach((d)=>{
@@ -345,27 +287,19 @@ localStorage.setItem("session",Date.now());
 });
 
 if(found){
-
 popupSuccess("seller.html");
-
 return;
-
 }
 
 }
-
 
 popupFail("Login Failed");
 
 }
 
-
-/* SUCCESS POPUP */
-
 function popupSuccess(page){
 
 msg.innerHTML="<h2 class='green'>Login Successful</h2>";
-
 popup.style.display="block";
 
 setTimeout(()=>{
@@ -374,18 +308,12 @@ window.location.replace(page);
 
 }
 
-
-/* FAIL POPUP */
-
 function popupFail(text){
 
 msg.innerHTML="<h2 class='red'>"+text+"</h2>";
-
 popup.style.display="block";
 
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
