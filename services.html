@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>All Services</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+/* SECURITY */
+
+if(localStorage.getItem("login")!="true"){
+location="index.html";
+}
+
+if(localStorage.getItem("role")!="seller"){
+location="index.html";
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#eef2f7;
+}
+
+/* HEADER */
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+font-size:20px;
+text-align:center;
+position:relative;
+}
+
+.back{
+position:absolute;
+left:10px;
+top:12px;
+background:white;
+color:#003366;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* GRID */
+
+.container{
+width:95%;
+margin:auto;
+margin-top:20px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 0 10px gray;
+text-align:center;
+cursor:pointer;
+transition:0.3s;
+position:relative;
+}
+
+.card:hover{
+transform:translateY(-5px) scale(1.03);
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
+}
+
+/* ICON */
+
+.icon{
+font-size:40px;
+margin-bottom:10px;
+}
+
+/* TITLE */
+
+.title{
+font-size:16px;
+font-weight:bold;
+}
+
+/* PRICE */
+
+.price{
+margin-top:5px;
+font-size:18px;
+color:#003366;
+}
+
+/* COMING */
+
+.coming{
+margin-top:6px;
+color:red;
+font-size:12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button class="back" onclick="location='seller.html'">
+⬅ Back
+</button>
+
+ALL SERVICES
+
+</div>
+
+<div class="container">
+
+<!-- AADHAAR -->
+
+<div class="card" onclick="location='aadhar.html'">
+
+<div class="icon">🪪</div>
+
+<div class="title">Aadhaar Card</div>
+
+<div class="price">₹2</div>
+
+</div>
+
+<!-- PAN -->
+
+<div class="card">
+
+<div class="icon">💳</div>
+
+<div class="title">PAN Card</div>
+
+<div class="price">₹5</div>
+
+<div class="coming">Coming Soon</div>
+
+</div>
+
+<!-- VOTER -->
+
+<div class="card">
+
+<div class="icon">🗳️</div>
+
+<div class="title">Voter ID</div>
+
+<div class="price">₹5</div>
+
+<div class="coming">Coming Soon</div>
+
+</div>
+
+<!-- ESHRAM -->
+
+<div class="card">
+
+<div class="icon">👷</div>
+
+<div class="title">E-Shram Card</div>
+
+<div class="price">₹3</div>
+
+<div class="coming">Coming Soon</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Add Balance</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+/* SECURITY */
+
+if(localStorage.getItem("login")!="true"){
+location="index.html";
+}
+
+if(localStorage.getItem("role")!="seller"){
+location="index.html";
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f6fa;
+}
+
+/* HEADER */
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+text-align:center;
+font-size:20px;
+position:relative;
+}
+
+/* BACK */
+
+.back{
+position:absolute;
+left:10px;
+top:10px;
+background:white;
+color:#003366;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* FORM */
+
+.box{
+background:white;
+width:320px;
+margin:40px auto;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+text-align:center;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:8px;
+border-radius:6px;
+border:1px solid gray;
+}
+
+button{
+padding:10px 15px;
+background:#003366;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button class="back" onclick="location='seller.html'">
+⬅ Back
+</button>
+
+Add Balance Request
+
+</div>
+
+<div class="box">
+
+<input id="amount" placeholder="Enter Amount">
+
+<input id="utr" placeholder="Enter UTR Number">
+
+<br>
+
+<button onclick="sendRequest()">
+Submit Request
+</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+let seller=localStorage.currentSeller;
+
+window.sendRequest=async function(){
+
+let amt=amount.value;
+let u=utr.value;
+
+if(amt=="" || u==""){
+alert("Fill All Fields");
+return;
+}
+
+/* SAVE REQUEST */
+
+await addDoc(collection(db,"balance_requests"),{
+
+seller:seller,
+amount:Number(amt),
+utr:u,
+status:"Request",
+message:"Pending Verification",
+time:new Date().toISOString()
+
+});
+
+/* ADD TRANSACTION ENTRY */
+
+await addDoc(collection(db,"transactions"),{
+
+seller:seller,
+type:"Recharge",
+amount:Number(amt),
+utr:u,
+status:"Request",
+message:"Pending Verification",
+time:new Date().toISOString()
+
+});
+
+alert("Request Sent");
+
+location="seller_wallet.html";
+
+}
+
+</script>
+
+</body>
+</html>

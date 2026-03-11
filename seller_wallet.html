@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Wallet History</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+/* SECURITY */
+
+if(localStorage.getItem("login")!="true"){
+location="index.html";
+}
+
+if(localStorage.getItem("role")!="seller"){
+location="index.html";
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f6fa;
+}
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+font-size:20px;
+text-align:center;
+position:relative;
+}
+
+.back{
+position:absolute;
+left:10px;
+top:10px;
+background:white;
+color:#003366;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.walletBox{
+width:90%;
+margin:auto;
+margin-top:15px;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+text-align:center;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.clear{
+background:red;
+color:white;
+}
+
+.cancel{
+background:green;
+color:white;
+}
+
+.searchBox{
+text-align:center;
+margin:15px;
+}
+
+.searchBox input{
+padding:8px;
+width:220px;
+border-radius:6px;
+border:1px solid gray;
+}
+
+.searchBox select{
+padding:8px;
+border-radius:6px;
+}
+
+table{
+width:95%;
+margin:auto;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 0 10px gray;
+}
+
+th{
+background:#003366;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+.recharge{
+background:#e8f7e8;
+}
+
+.bonus{
+background:#fff3e0;
+}
+
+.debit{
+background:#ffeaea;
+}
+
+.warning{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.warningBox{
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+width:300px;
+}
+
+.warningBox h3{
+color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button class="back" onclick="location='seller.html'">⬅ Back</button>
+
+Wallet History
+
+</div>
+
+<div class="walletBox">
+
+<button id="clearBtn" class="clear" onclick="clearHistory()">
+Clear History
+</button>
+
+<div id="countdown"></div>
+
+</div>
+
+<div class="searchBox">
+
+<input id="search" placeholder="Search UTR / Amount">
+
+<select id="typeFilter">
+
+<option value="All">All</option>
+<option value="Recharge">Recharge</option>
+<option value="Bonus">Bonus</option>
+<option value="Debit">Debit</option>
+
+</select>
+
+</div>
+
+<table id="tbl">
+
+<tr>
+<th>SR</th>
+<th>Type</th>
+<th>Amount</th>
+<th>UTR</th>
+<th>Status</th>
+<th>Message</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
+
+</table>
+
+<!-- WARNING POPUP -->
+
+<div class="warning" id="warn">
+
+<div class="warningBox">
+
+<h3>⚠ Warning</h3>
+
+<p>
+आप wallet history delete करने जा रहे हैं।
+24 घंटे के बाद data permanently delete हो जाएगा।
+</p>
+
+<button onclick="startDelete()">Continue</button>
+
+<button onclick="closeWarn()">Cancel</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+onSnapshot,
+getDocs,
+deleteDoc,
+doc
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+let seller=localStorage.currentSeller;
+
+let dataList=[];
+
+/* REALTIME */
+
+onSnapshot(collection(db,"transactions"),(snap)=>{
+
+dataList=[];
+
+snap.forEach((d)=>{
+
+let t=d.data();
+
+if(t.seller==seller){
+dataList.push({...t,id:d.id});
+}
+
+});
+
+show();
+
+});
+
+/* SHOW DATA */
+
+function show(){
+
+let search=document.getElementById("search").value.toLowerCase();
+
+let typeFilter=document.getElementById("typeFilter").value;
+
+tbl.innerHTML=`
+<tr>
+<th>SR</th>
+<th>Type</th>
+<th>Amount</th>
+<th>UTR</th>
+<th>Status</th>
+<th>Message</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
+`;
+
+dataList.sort((a,b)=> new Date(b.time) - new Date(a.time));
+
+let i=1;
+
+dataList.forEach((t)=>{
+
+if(typeFilter!="All" && t.type!=typeFilter){
+return;
+}
+
+if(search && !(t.utr||"").toLowerCase().includes(search)){
+return;
+}
+
+let d=new Date(t.time);
+
+let date=d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+
+let time=d.toLocaleTimeString();
+
+let row=tbl.insertRow();
+
+row.className=t.type.toLowerCase();
+
+row.insertCell(0).innerHTML=i++;
+
+row.insertCell(1).innerHTML=t.type;
+
+row.insertCell(2).innerHTML="₹"+t.amount;
+
+row.insertCell(3).innerHTML=t.utr || "-";
+
+row.insertCell(4).innerHTML=t.status || "-";
+
+row.insertCell(5).innerHTML=t.message || "-";
+
+row.insertCell(6).innerHTML=date;
+
+row.insertCell(7).innerHTML=time;
+
+});
+
+}
+
+/* CLEAR HISTORY */
+
+window.clearHistory=function(){
+
+document.getElementById("warn").style.display="flex";
+
+}
+
+window.closeWarn=function(){
+
+document.getElementById("warn").style.display="none";
+
+}
+
+/* START DELETE */
+
+window.startDelete=function(){
+
+let time=Date.now();
+
+localStorage.setItem("deleteStart",time);
+
+document.getElementById("warn").style.display="none";
+
+document.getElementById("clearBtn").innerText="Cancel Delete";
+
+document.getElementById("clearBtn").className="cancel";
+
+document.getElementById("clearBtn").onclick=cancelDelete;
+
+countdown();
+
+}
+
+/* CANCEL */
+
+window.cancelDelete=function(){
+
+localStorage.removeItem("deleteStart");
+
+alert("Your data is safe 😊");
+
+location.reload();
+
+}
+
+/* COUNTDOWN */
+
+function countdown(){
+
+let start=localStorage.getItem("deleteStart");
+
+if(!start) return;
+
+setInterval(async ()=>{
+
+let diff=(Date.now()-start)/1000;
+
+let left=86400-diff;
+
+if(left<=0){
+
+let snap=await getDocs(collection(db,"transactions"));
+
+snap.forEach(async (d)=>{
+
+let t=d.data();
+
+if(t.seller==seller){
+
+await deleteDoc(doc(db,"transactions",d.id));
+
+}
+
+});
+
+localStorage.removeItem("deleteStart");
+
+location.reload();
+
+}
+
+let h=Math.floor(left/3600);
+let m=Math.floor((left%3600)/60);
+let s=Math.floor(left%60);
+
+document.getElementById("countdown").innerHTML=
+"History delete in "+h+":"+m+":"+s;
+
+},1000);
+
+}
+
+countdown();
+
+search.onkeyup=show;
+typeFilter.onchange=show;
+
+</script>
+
+</body>
+</html>

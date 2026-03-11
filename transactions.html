@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>All Transactions</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+/* SECURITY */
+
+if(localStorage.getItem("login")!="true" || localStorage.getItem("role")!="admin"){
+location.replace("index.html");
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f4f8;
+margin:0;
+}
+
+/* HEADER */
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+.back{
+background:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+cursor:pointer;
+margin-right:10px;
+}
+
+/* SEARCH */
+
+.searchBox{
+width:95%;
+margin:15px auto;
+}
+
+.searchBox input{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+/* TABLE */
+
+table{
+width:95%;
+margin:auto;
+background:white;
+border-collapse:collapse;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#003366;
+color:white;
+}
+
+/* TYPE COLORS */
+
+.credit{
+color:green;
+font-weight:bold;
+}
+
+.debit{
+color:red;
+font-weight:bold;
+}
+
+/* DELETE BUTTON */
+
+.delBtn{
+background:#d32f2f;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button class="back" onclick="location='admin.html'">← Back</button>
+
+All Transactions History
+
+</div>
+
+<div class="searchBox">
+
+<input id="search" placeholder="Search Seller Username">
+
+</div>
+
+<table id="tbl"></table>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc,
+deleteDoc
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const tbl=document.getElementById("tbl");
+const search=document.getElementById("search");
+
+let data=[];
+
+load();
+
+/* LOAD DATA */
+
+async function load(){
+
+const snap=await getDocs(collection(db,"transactions"));
+
+data=[];
+
+snap.forEach((d)=>{
+
+let t=d.data();
+
+t.id=d.id;
+
+data.push(t);
+
+});
+
+render();
+
+}
+
+/* RENDER TABLE */
+
+async function render(){
+
+tbl.innerHTML=`
+<tr>
+<th>SR</th>
+<th>Seller</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Message</th>
+<th>Date</th>
+<th>Delete</th>
+</tr>`;
+
+let i=1;
+
+for(let t of data){
+
+let sellerName=t.seller;
+
+/* GET USERNAME */
+
+const sSnap=await getDoc(doc(db,"seller",t.seller));
+
+if(sSnap.exists()){
+sellerName=sSnap.data().user;
+}
+
+/* SEARCH FILTER */
+
+if(search.value && !sellerName.toLowerCase().includes(search.value.toLowerCase())) continue;
+
+/* DATE */
+
+let date="-";
+
+if(t.time){
+
+if(t.time.seconds){
+
+date=new Date(t.time.seconds*1000).toLocaleString();
+
+}else{
+
+date=new Date(t.time).toLocaleString();
+
+}
+
+}
+
+/* TYPE STYLE */
+
+let typeClass="";
+
+if(t.type=="Bonus" || t.type=="Recharge"){
+typeClass="credit";
+}else{
+typeClass="debit";
+}
+
+let row=tbl.insertRow();
+
+row.insertCell(0).innerHTML=i++;
+
+row.insertCell(1).innerHTML=sellerName;
+
+row.insertCell(2).innerHTML=t.type;
+
+row.insertCell(3).innerHTML=
+`<span class="${typeClass}">₹${t.amount}</span>`;
+
+row.insertCell(4).innerHTML=t.message||"-";
+
+row.insertCell(5).innerHTML=date;
+
+row.insertCell(6).innerHTML=
+`<button class="delBtn" onclick="deleteHistory('${t.id}',this)">Delete</button>`;
+
+}
+
+}
+
+/* DELETE HISTORY */
+
+window.deleteHistory=async function(id,btn){
+
+let ok=confirm("Delete Transaction History?");
+
+if(!ok) return;
+
+/* DELETE ONLY HISTORY */
+
+await deleteDoc(doc(db,"transactions",id));
+
+/* REMOVE ROW */
+
+btn.closest("tr").remove();
+
+}
+
+search.oninput=render;
+
+</script>
+
+</body>
+</html>

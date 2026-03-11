@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Seller Detail</title>
+
+<meta name="viewport" content="width=device-width">
+
+<style>
+
+body{
+font-family:Arial;
+background:#e9ecef;
+margin:0;
+}
+
+.header{
+background:#0b3d6d;
+color:white;
+padding:20px;
+text-align:center;
+font-size:26px;
+font-weight:bold;
+}
+
+.card{
+width:900px;
+max-width:95%;
+margin:40px auto;
+background:white;
+border-radius:15px;
+padding:30px;
+box-shadow:0 4px 20px rgba(0,0,0,0.2);
+}
+
+.dp{
+font-size:55px;
+margin-bottom:10px;
+}
+
+.userinfo{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+}
+
+.left p,.right p{
+font-size:18px;
+margin:10px 0;
+}
+
+.status{
+background:#1b7f5f;
+color:white;
+padding:4px 12px;
+border-radius:8px;
+font-size:14px;
+}
+
+.toggle-box{
+margin-top:20px;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:18px;
+}
+
+.switch{
+position:relative;
+display:inline-block;
+width:60px;
+height:28px;
+}
+
+.switch input{
+display:none;
+}
+
+.slider{
+position:absolute;
+cursor:pointer;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:#ccc;
+border-radius:20px;
+}
+
+.slider:before{
+position:absolute;
+content:"";
+height:22px;
+width:22px;
+left:3px;
+bottom:3px;
+background:white;
+border-radius:50%;
+transition:.3s;
+}
+
+input:checked + .slider{
+background:#2e7d32;
+}
+
+input:checked + .slider:before{
+transform:translateX(30px);
+}
+
+/* BUTTON GRID */
+
+.grid{
+margin-top:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.btn{
+padding:14px;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+}
+
+.green{
+background:#2e7d6f;
+color:white;
+}
+
+.red{
+background:#d83b3b;
+color:white;
+}
+
+/* FULL WIDTH BUTTON */
+
+.fullBtn{
+margin-top:15px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+background:#2d3748;
+color:white;
+}
+
+.back{
+margin-top:15px;
+width:100%;
+background:#0b3d6d;
+color:white;
+padding:12px;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+}
+
+/* POPUP */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.popupBox{
+background:white;
+padding:30px;
+border-radius:10px;
+text-align:center;
+}
+
+.popupBox input{
+padding:10px;
+width:220px;
+font-size:16px;
+margin-top:10px;
+}
+
+.popupBox button{
+margin:10px;
+padding:10px 20px;
+cursor:pointer;
+}
+
+</style>
+
+<script>
+
+if(localStorage.getItem("login")!="true" || localStorage.getItem("role")!="admin"){
+location.replace("index.html");
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="header">
+Seller Detail
+</div>
+
+<div class="card">
+
+<div class="userinfo">
+
+<div class="left">
+
+<div class="dp">👤</div>
+
+<p><b>Username :</b> <span id="user"></span></p>
+<p><b>Mobile :</b> <span id="mobile"></span></p>
+<p><b>Status :</b> <span id="status" class="status"></span></p>
+<p><b>Password :</b> <span id="pass"></span></p>
+<p><b>Created :</b> <span id="created"></span></p>
+
+</div>
+
+<div class="right">
+
+<p><b>Last Login :</b> <span id="lastLogin"></span></p>
+<p><b>Balance :</b> ₹<span id="balance"></span></p>
+<p><b>Total PDF :</b> <span id="pdf"></span></p>
+
+</div>
+
+</div>
+
+<div class="toggle-box">
+
+<span>Disable</span>
+
+<label class="switch">
+<input type="checkbox" id="toggle">
+<span class="slider"></span>
+</label>
+
+<span>Enable</span>
+
+</div>
+
+<!-- ADD / DEDUCT -->
+
+<div class="grid">
+
+<button class="btn green" onclick="openAmount('add')">₹ Add Amount</button>
+
+<button class="btn red" onclick="openAmount('deduct')">₹ Deduct Amount</button>
+
+</div>
+
+<!-- RESET PASSWORD -->
+
+<button class="fullBtn" onclick="openPass()">Reset Password</button>
+
+<!-- BACK -->
+
+<button class="back" onclick="back()">Back</button>
+
+</div>
+
+<!-- AMOUNT POPUP -->
+
+<div class="popup" id="amountPopup">
+
+<div class="popupBox">
+
+<h3>Enter Amount</h3>
+
+<input type="number" id="amountInput">
+
+<br>
+
+<button onclick="submitAmount()">OK</button>
+<button onclick="closeAmount()">Cancel</button>
+
+</div>
+
+</div>
+
+<!-- PASSWORD POPUP -->
+
+<div class="popup" id="passPopup">
+
+<div class="popupBox">
+
+<h3>New Password</h3>
+
+<input type="text" id="passInput">
+
+<br>
+
+<button onclick="submitPass()">OK</button>
+<button onclick="closePass()">Cancel</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const id=localStorage.getItem("viewSeller");
+
+if(!id){
+alert("Seller ID Missing");
+location="admin.html";
+}
+
+const ref=doc(db,"seller",id);
+
+const snap=await getDoc(ref);
+
+const s=snap.data();
+
+/* LOAD DATA */
+
+document.getElementById("user").innerText=s.user||"-";
+document.getElementById("mobile").innerText=s.mobile||"-";
+document.getElementById("pass").innerText=s.pass||"-";
+document.getElementById("created").innerText=s.created||"-";
+document.getElementById("balance").innerText=s.balance||0;
+document.getElementById("pdf").innerText=s.pdf||0;
+
+document.getElementById("lastLogin").innerText=
+s.lastLogin ? new Date(s.lastLogin.seconds*1000).toLocaleString() : "Never";
+
+document.getElementById("status").innerText=s.active?"Active":"Disabled";
+
+document.getElementById("toggle").checked=s.active;
+
+/* ENABLE DISABLE */
+
+document.getElementById("toggle").onchange=async function(){
+
+await updateDoc(ref,{active:this.checked});
+
+location.reload();
+
+};
+
+/* AMOUNT */
+
+let mode="add";
+
+window.openAmount=function(m){
+
+mode=m;
+document.getElementById("amountPopup").style.display="flex";
+
+}
+
+window.closeAmount=function(){
+
+document.getElementById("amountPopup").style.display="none";
+
+}
+
+window.submitAmount=async function(){
+
+let amt=Number(document.getElementById("amountInput").value);
+
+if(!amt){
+alert("Enter valid amount");
+return;
+}
+
+let newBal=s.balance||0;
+
+if(mode=="add"){
+newBal+=amt;
+}else{
+
+newBal-=amt;
+
+if(newBal<0){
+alert("Insufficient Balance");
+return;
+}
+
+}
+
+await updateDoc(ref,{balance:newBal});
+
+location.reload();
+
+}
+
+/* PASSWORD */
+
+window.openPass=function(){
+
+document.getElementById("passPopup").style.display="flex";
+
+}
+
+window.closePass=function(){
+
+document.getElementById("passPopup").style.display="none";
+
+}
+
+window.submitPass=async function(){
+
+let p=document.getElementById("passInput").value;
+
+if(!p){
+alert("Enter password");
+return;
+}
+
+await updateDoc(ref,{pass:p});
+
+location.reload();
+
+}
+
+</script>
+
+<script>
+
+function back(){
+location="admin.html";
+}
+
+</script>
+
+</body>
+</html>

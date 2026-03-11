@@ -1,0 +1,215 @@
+<!DOCTYPE html><html><head><title>Seller Profile</title><meta name="viewport" content="width=device-width"><script>
+
+/* LOGIN SECURITY */
+
+if(localStorage.getItem("login")!="true"){
+window.location.replace("index.html");
+}
+
+/* SESSION CHECK */
+
+let session=localStorage.getItem("session");
+
+if(session){
+
+let now=Date.now();
+let diff=(now-Number(session))/1000;
+
+if(diff>3600){
+
+localStorage.clear();
+window.location.replace("index.html");
+
+}
+
+}
+
+</script><style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#eef2f7;
+}
+
+/* HEADER */
+
+.header{
+background:#003366;
+color:white;
+padding:15px;
+font-size:22px;
+text-align:center;
+}
+
+/* NAV BAR */
+
+.nav{
+display:flex;
+justify-content:center;
+background:#002244;
+}
+
+.nav button{
+flex:1;
+padding:12px;
+border:none;
+background:none;
+color:white;
+cursor:pointer;
+font-size:15px;
+}
+
+.nav button:hover{
+background:#004080;
+}
+
+/* PROFILE CARD */
+
+.profile{
+width:400px;
+max-width:90%;
+background:white;
+margin:40px auto;
+border-radius:15px;
+box-shadow:0px 0px 15px gray;
+padding:25px;
+text-align:center;
+}
+
+.profile img{
+width:90px;
+border-radius:50%;
+margin-bottom:10px;
+}
+
+.name{
+font-size:22px;
+margin-bottom:5px;
+}
+
+.info{
+margin-top:10px;
+font-size:16px;
+}
+
+.btn{
+margin-top:20px;
+padding:12px 20px;
+background:#003366;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#004c99;
+}
+
+</style></head><body><div class="header">
+Seller Profile
+</div><div class="nav"><button onclick="location='seller.html'">
+Dashboard
+</button><button onclick="location='wallet.html'">
+Wallet
+</button><button onclick="location='profile.html'">
+Profile
+</button><button onclick="logout()">
+Logout
+</button></div><div class="profile"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"><div class="name" id="username">
+Seller
+</div><div class="info">
+User ID : <span id="userid"></span>
+</div><div class="info">
+Mobile : <span id="mobile"></span>
+</div><div class="info">
+Account Created : <span id="created"></span>
+</div><div class="info">
+Expiry Date : <span id="expiry"></span>
+</div><div class="info">
+Wallet Balance : ₹<span id="balance"></span>
+</div><div class="info">
+Total PDF Created : <span id="pdf"></span>
+</div><button class="btn" onclick="changePass()">
+Change Password
+</button></div><script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+updateDoc
+}
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+
+let sellerID=localStorage.currentSeller;
+
+if(!sellerID){
+window.location.replace("index.html");
+}
+
+
+/* LOAD DATA */
+
+const snap=await getDoc(doc(db,"seller",sellerID));
+
+if(!snap.exists()){
+localStorage.clear();
+window.location.replace("index.html");
+}
+
+let s=snap.data();
+
+
+document.getElementById("username").innerHTML=s.user;
+document.getElementById("userid").innerHTML=sellerID;
+document.getElementById("mobile").innerHTML=s.mobile||"N/A";
+document.getElementById("created").innerHTML=s.created||"N/A";
+document.getElementById("expiry").innerHTML=s.expiry;
+document.getElementById("balance").innerHTML=s.balance||0;
+document.getElementById("pdf").innerHTML=s.pdf||0;
+
+
+/* CHANGE PASSWORD */
+
+window.changePass=async function(){
+
+let p=prompt("Enter New Password");
+
+if(!p) return;
+
+await updateDoc(doc(db,"seller",sellerID),{
+pass:p,
+temp:false
+});
+
+alert("Password Changed");
+
+}
+
+</script><script>
+
+function logout(){
+
+localStorage.clear();
+location="index.html";
+
+}
+
+</script></body>
+</html>

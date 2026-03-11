@@ -3,172 +3,179 @@
 
 <head>
 
-<title>PRINT PORTAL SELLER</title>
+<title>SELLER DASHBOARD</title>
 
 <meta name="viewport" content="width=device-width">
 
 <script>
 
-/* LOGIN PROTECTION */
+/* SECURITY */
 
 if(localStorage.getItem("login")!="true"){
-
-window.location.replace("index.html");
-
+location="index.html";
 }
 
-
-/* AUTO LOGOUT AFTER 1 HOUR */
-
-let session=localStorage.getItem("session");
-
-if(session){
-
-let now=Date.now();
-
-let diff=(now-Number(session))/1000;
-
-if(diff>3600){
-
-localStorage.clear();
-
-window.location.replace("index.html");
-
-}
-
+if(localStorage.getItem("role")!="seller"){
+location="index.html";
 }
 
 </script>
-
 
 <style>
 
 body{
 font-family:Arial;
 margin:0;
-background:#f5f7fa;
+background:#eef2f7;
 }
-
 
 /* HEADER */
 
 .header{
-
 background:#003366;
 color:white;
 padding:15px;
-font-size:22px;
+font-size:20px;
 text-align:center;
 position:relative;
-
 }
 
-
-/* USERNAME */
-
-.user{
-
+.menuBtn{
 position:absolute;
-left:20px;
-top:18px;
-font-size:16px;
-
-}
-
-
-/* DP ICON */
-
-.dp{
-
-position:absolute;
-right:20px;
-top:10px;
-width:45px;
+left:10px;
+top:12px;
+font-size:22px;
 cursor:pointer;
-border-radius:50%;
-
 }
 
+/* SIDE MENU */
 
-/* PROFILE MENU */
-
-.menu{
-
-position:absolute;
-right:20px;
-top:70px;
-background:white;
-box-shadow:0px 0px 15px gray;
-border-radius:10px;
-display:none;
+.sideMenu{
+position:fixed;
+left:-240px;
+top:0;
 width:230px;
-
+height:100%;
+background:#003366;
+color:white;
+transition:0.3s;
+padding-top:10px;
+z-index:10;
 }
 
-.menu div{
+/* SELLER NAME */
 
-padding:12px;
-cursor:pointer;
-border-bottom:1px solid #eee;
-
-}
-
-.menu div:hover{
-
-background:#f0f0f0;
-
-}
-
-
-/* DASHBOARD */
-
-.dashboard{
-
+.sellerName{
+font-size:22px;
+font-weight:bold;
 text-align:center;
-margin-top:20px;
-font-size:18px;
+padding:25px 10px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+
+0%{
+color:white;
+}
+
+100%{
+color:#00ffff;
+}
 
 }
 
+/* MENU ITEMS */
 
-/* CARDS */
+.sideMenu div{
+padding:15px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+cursor:pointer;
+}
+
+.sideMenu div:hover{
+background:#004a99;
+}
+
+/* CONTAINER */
 
 .container{
-
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-margin-top:30px;
-
+width:95%;
+margin:auto;
+margin-top:20px;
 }
 
+/* WALLET */
 
-.card{
-
-width:260px;
-height:150px;
+.wallet{
 background:white;
-margin:20px;
+padding:25px;
 border-radius:12px;
-box-shadow:0px 0px 15px gray;
 text-align:center;
-padding-top:45px;
-font-size:20px;
+box-shadow:0 0 12px gray;
+}
+
+.walletTitle{
+font-size:16px;
+color:gray;
+}
+
+.balance{
+font-size:32px;
+color:green;
+margin-top:6px;
+}
+
+/* COUNTERS */
+
+.counterGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:20px;
+}
+
+.counter{
+padding:15px;
+border-radius:10px;
+color:white;
+text-align:center;
+box-shadow:0 0 10px gray;
+}
+
+.counter b{
+font-size:22px;
+}
+
+.recharge{
+background:linear-gradient(45deg,#28a745,#5ddf88);
+}
+
+.debit{
+background:linear-gradient(45deg,#dc3545,#ff6b6b);
+}
+
+.bonus{
+background:linear-gradient(45deg,#ff9800,#ffc266);
+}
+
+.balanceCard{
+background:linear-gradient(45deg,#003366,#0066cc);
+}
+
+/* ALL SERVICES */
+
+.serviceMain{
+margin-top:25px;
+background:linear-gradient(45deg,#007bff,#00c6ff);
+color:white;
+padding:30px;
+border-radius:12px;
+text-align:center;
+font-size:22px;
 cursor:pointer;
-
-}
-
-.card:hover{
-
-transform:scale(1.05);
-
-}
-
-.coming{
-
-color:red;
-font-size:14px;
-
+box-shadow:0 0 15px gray;
 }
 
 </style>
@@ -177,254 +184,212 @@ font-size:14px;
 
 <body>
 
-
-
 <div class="header">
 
-<div class="user" id="username">
+<span class="menuBtn" onclick="toggleMenu()">☰</span>
 
-Seller
-
-</div>
-
-PRINT PORTAL SELLER
-
-<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-
-class="dp"
-
-onclick="menu()">
+SELLER DASHBOARD
 
 </div>
 
 
+<div class="sideMenu" id="menu">
 
-<div class="menu" id="menu">
-
-<div id="sellerName">
-
-User :
-
+<div class="sellerName" id="sellerName">
+SELLER
 </div>
 
-<div id="validity">
-
-Validity :
-
+<div onclick="location='seller.html'">
+Dashboard
 </div>
 
-<div id="pdfcount">
-
-PDF :
-
+<div onclick="location='seller_profile.html'">
+Profile
 </div>
 
-<div onclick="changePass()">
+<div onclick="location='seller_wallet.html'">
+Wallet
+</div>
 
-🔑 Change Password
-
+<div onclick="location='seller_add_balance.html'">
+Add Balance
 </div>
 
 <div onclick="logout()">
-
 Logout
-
 </div>
 
 </div>
-
-
-
-<div class="dashboard">
-
-Welcome Seller Panel
-
-</div>
-
 
 
 <div class="container">
 
-<div class="card" onclick="openAadhar()">
-Aadhaar Card
+<!-- WALLET -->
+
+<div class="wallet">
+
+<div class="walletTitle">
+Wallet Balance
 </div>
 
-<div class="card">
-Voter Card
-<div class="coming">Coming Soon</div>
-</div>
-
-<div class="card">
-E-Shram Card
-<div class="coming">Coming Soon</div>
-</div>
-
-<div class="card">
-Ayushman Card
-<div class="coming">Coming Soon</div>
+<div class="balance" id="bal">
+₹0
 </div>
 
 </div>
 
+<!-- COUNTERS -->
+
+<div class="counterGrid">
+
+<div class="counter balanceCard">
+
+Balance
+
+<b id="cBalance">₹0</b>
+
+</div>
+
+<div class="counter recharge">
+
+Recharge
+
+<b id="cRecharge">₹0</b>
+
+</div>
+
+<div class="counter debit">
+
+Debit
+
+<b id="cDebit">₹0</b>
+
+</div>
+
+<div class="counter bonus">
+
+Bonus
+
+<b id="cBonus">₹0</b>
+
+</div>
+
+</div>
+
+<!-- ALL SERVICES -->
+
+<div class="serviceMain" onclick="location='services.html'">
+
+ALL SERVICES
+
+</div>
+
+</div>
 
 
 <script type="module">
 
 import { initializeApp }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
-
 getFirestore,
 doc,
 getDoc,
-updateDoc
-
+collection,
+getDocs
 }
-
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
-
 const firebaseConfig={
-
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
-
 authDomain:"printportal-36ae0.firebaseapp.com",
-
 projectId:"printportal-36ae0"
-
 };
 
-
 const app=initializeApp(firebaseConfig);
-
 const db=getFirestore(app);
 
+let seller=localStorage.currentSeller;
 
+async function load(){
 
-let sellerID=localStorage.currentSeller;
+let ref=doc(db,"seller",seller);
 
-
-/* INVALID SESSION CHECK */
-
-if(!sellerID){
-
-window.location.replace("index.html");
-
-}
-
-
-
-/* LOAD SELLER DATA */
-
-const snap=await getDoc(doc(db,"seller",sellerID));
+let snap=await getDoc(ref);
 
 let s=snap.data();
 
+bal.innerHTML="₹"+(s.balance||0);
+cBalance.innerHTML="₹"+(s.balance||0);
 
+/* SELLER NAME */
 
-/* SHOW USER DATA */
+document.getElementById("sellerName").innerText =
+(s.user || "SELLER").toUpperCase();
 
-document.getElementById("username").innerHTML=s.user;
+/* COUNTERS */
 
-document.getElementById("sellerName").innerHTML="User : "+s.user;
+let recharge=0;
+let debit=0;
+let bonus=0;
 
-document.getElementById("validity").innerHTML="Validity : "+s.expiry;
+let tx=await getDocs(collection(db,"transactions"));
 
-document.getElementById("pdfcount").innerHTML="PDF : "+(s.pdf||0);
+tx.forEach((d)=>{
 
+let t=d.data();
 
+if(t.seller==seller){
 
-/* EXPIRY CHECK */
-
-if(new Date(s.expiry) < new Date()){
-
-alert("Your ID Expired");
-
-logout();
-
+if(t.type=="Recharge"){
+recharge+=Number(t.amount);
 }
 
-
-
-/* TEMP PASSWORD ALERT */
-
-if(s.temp){
-
-alert("Temporary Password Detected\nChange Password Now");
-
+if(t.type=="Debit"){
+debit+=Number(t.amount);
 }
 
+if(t.type=="Bonus"){
+bonus+=Number(t.amount);
+}
 
-
-/* CHANGE PASSWORD */
-
-window.changePass=async function(){
-
-let p=prompt("Enter New Password");
-
-if(!p) return;
-
-
-
-await updateDoc(doc(db,"seller",sellerID),{
-
-pass:p,
-temp:false
+}
 
 });
 
-alert("Password Changed");
+cRecharge.innerHTML="₹"+recharge;
+cDebit.innerHTML="₹"+debit;
+cBonus.innerHTML="₹"+bonus;
 
 }
 
-
-
-/* OPEN AADHAR PAGE */
-
-window.openAadhar=function(){
-
-location="aadhar.html";
-
-}
+load();
 
 </script>
 
-
-
 <script>
 
-/* PROFILE MENU */
-
-function menu(){
+function toggleMenu(){
 
 let m=document.getElementById("menu");
 
-m.style.display=
-
-m.style.display=="block"
-
-?"none":"block";
-
+if(m.style.left=="0px"){
+m.style.left="-240px";
+}else{
+m.style.left="0px";
 }
 
-
-/* LOGOUT */
+}
 
 function logout(){
 
 localStorage.clear();
-
-window.location.replace("index.html");
+location="index.html";
 
 }
 
 </script>
 
-
-
 </body>
-
 </html>

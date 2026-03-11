@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Rejected Recharge</title>
+
+<meta name="viewport" content="width=device-width">
+
+<script>
+
+if(localStorage.getItem("login")!="true" || localStorage.getItem("role")!="admin"){
+location.replace("index.html");
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f4f8;
+margin:0;
+}
+
+.header{
+background:#d32f2f;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+.searchBox{
+width:95%;
+margin:15px auto;
+}
+
+.searchBox input{
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+}
+
+table{
+width:95%;
+margin:auto;
+background:white;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#d32f2f;
+color:white;
+}
+
+.delBtn{
+background:#444;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:5px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<button onclick="location='admin.html'">← Back</button>
+
+Rejected Recharge
+
+</div>
+
+<div class="searchBox">
+<input id="search" placeholder="Search Seller Username">
+</div>
+
+<table id="tbl"></table>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc,
+deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
+authDomain:"printportal-36ae0.firebaseapp.com",
+projectId:"printportal-36ae0"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const tbl=document.getElementById("tbl");
+const search=document.getElementById("search");
+
+let data=[];
+
+load();
+
+async function load(){
+
+const snap=await getDocs(collection(db,"balance_requests"));
+
+data=[];
+
+snap.forEach((d)=>{
+
+let r=d.data();
+
+if(r.status=="rejected"){
+r.id=d.id;
+data.push(r);
+}
+
+});
+
+render();
+
+}
+
+async function render(){
+
+tbl.innerHTML=`<tr>
+<th>SR</th>
+<th>Seller</th>
+<th>Amount</th>
+<th>UTR</th>
+<th>Date</th>
+<th>Reason</th>
+<th>Delete</th>
+</tr>`;
+
+let i=1;
+
+for(let r of data){
+
+let sellerName=r.seller;
+
+const sSnap=await getDoc(doc(db,"seller",r.seller));
+
+if(sSnap.exists()){
+sellerName=sSnap.data().user;
+}
+
+if(search.value && !sellerName.toLowerCase().includes(search.value.toLowerCase())) continue;
+
+let date="-";
+
+if(r.time){
+if(r.time.seconds){
+date=new Date(r.time.seconds*1000).toLocaleString();
+}else{
+date=new Date(r.time).toLocaleString();
+}
+}
+
+let row=tbl.insertRow();
+
+row.insertCell(0).innerHTML=i++;
+row.insertCell(1).innerHTML=sellerName;
+row.insertCell(2).innerHTML="₹"+r.amount;
+row.insertCell(3).innerHTML=r.utr||"-";
+row.insertCell(4).innerHTML=date;
+row.insertCell(5).innerHTML=r.message||"-";
+
+row.insertCell(6).innerHTML=
+`<button class="delBtn" onclick="deleteHistory('${r.id}',this)">Delete</button>`;
+
+}
+
+}
+
+window.deleteHistory=async function(id,btn){
+
+let ok=confirm("Delete History ?");
+
+if(!ok) return;
+
+await deleteDoc(doc(db,"balance_requests",id));
+
+btn.closest("tr").remove();
+
+}
+
+search.oninput=render;
+
+</script>
+
+</body>
+</html>
