@@ -27,8 +27,6 @@ margin:0;
 background:#f0f2f5;
 }
 
-/* HEADER */
-
 .header{
 background:#003366;
 color:white;
@@ -37,8 +35,6 @@ font-size:22px;
 text-align:center;
 position:relative;
 }
-
-/* BACK BUTTON */
 
 .backBtn{
 position:absolute;
@@ -52,8 +48,6 @@ border-radius:6px;
 cursor:pointer;
 font-weight:bold;
 }
-
-/* TABLE */
 
 table{
 width:95%;
@@ -115,7 +109,7 @@ font-weight:bold;
 
 <div class="header">
 
-<button class="backBtn" onclick="goBack()">
+<button class="backBtn" onclick="location='admin.html'">
 ⬅ Back
 </button>
 
@@ -123,20 +117,7 @@ Balance Requests
 
 </div>
 
-<table id="tbl">
-
-<tr>
-<th>SR</th>
-<th>SELLER</th>
-<th>AMOUNT</th>
-<th>UTR</th>
-<th>TIME</th>
-<th>STATUS</th>
-<th>APPROVE</th>
-<th>REJECT</th>
-</tr>
-
-</table>
+<table id="tbl"></table>
 
 <script type="module">
 
@@ -154,7 +135,6 @@ addDoc
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
 const firebaseConfig={
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 authDomain:"printportal-36ae0.firebaseapp.com",
@@ -164,9 +144,7 @@ projectId:"printportal-36ae0"
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
-
 load();
-
 
 async function load(){
 
@@ -191,8 +169,6 @@ for(const d of snap.docs){
 
 let r=d.data();
 
-/* GET SELLER NAME */
-
 let sellerSnap=await getDoc(doc(db,"seller",r.seller));
 
 let sellerName="-";
@@ -204,20 +180,16 @@ sellerName=sellerSnap.data().user;
 let row=tbl.insertRow();
 
 row.insertCell(0).innerHTML=i++;
-
 row.insertCell(1).innerHTML=sellerName;
-
 row.insertCell(2).innerHTML="₹"+r.amount;
-
 row.insertCell(3).innerHTML=r.utr;
-
 row.insertCell(4).innerHTML=r.time;
 
 /* STATUS */
 
 let st=row.insertCell(5);
 
-if(r.status=="pending"){
+if(r.status=="pending" || r.status=="Request"){
 st.innerHTML="<span class='pending'>Processing</span>";
 }
 
@@ -229,15 +201,14 @@ else{
 st.innerHTML="<span class='rejected'>Rejected</span>";
 }
 
-/* APPROVE BUTTON */
+/* BUTTON CELLS */
 
 let approveCell=row.insertCell(6);
-
-/* REJECT BUTTON */
-
 let rejectCell=row.insertCell(7);
 
-if(r.status=="pending"){
+/* SHOW BUTTONS */
+
+if(r.status=="pending" || r.status=="Request"){
 
 approveCell.innerHTML=
 "<span class='green' onclick='approve(\""+d.id+"\")'>Approve</span>";
@@ -255,7 +226,6 @@ rejectCell.innerHTML="-";
 }
 
 }
-
 
 /* APPROVE */
 
@@ -310,7 +280,6 @@ location.reload();
 
 }
 
-
 /* REJECT */
 
 window.reject=async function(id){
@@ -329,16 +298,6 @@ message:reason
 alert("Request Rejected");
 
 location.reload();
-
-}
-
-</script>
-
-<script>
-
-function goBack(){
-
-location="admin.html";
 
 }
 
