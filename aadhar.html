@@ -5,6 +5,8 @@
 
 <title>PRINT PORTAL Aadhaar Editor</title>
 
+<meta name="viewport" content="width=device-width">
+
 <script>
 
 if(localStorage.getItem("login")!="true"){
@@ -31,15 +33,11 @@ window.location="index.html";
 
 </script>
 
-<meta name="viewport" content="width=device-width">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-
-/* (आपका पूरा CSS बिना change के वही है) */
 
 body{
 font-family:Arial;
@@ -56,6 +54,7 @@ color:white;
 padding:12px;
 font-size:22px;
 font-weight:bold;
+position:relative;
 }
 
 .backBtn{
@@ -67,6 +66,7 @@ background:white;
 color:#003366;
 border:none;
 cursor:pointer;
+border-radius:5px;
 }
 
 /* PANEL */
@@ -171,8 +171,6 @@ z-index:3;
 .dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;z-index:3;}
 .gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;z-index:3;}
 
-/* ADDRESS */
-
 .addrHindi{
 position:absolute;
 top:12mm;
@@ -238,7 +236,7 @@ z-index:3;
 <div class="header">
 
 <button class="backBtn"
-onclick="location='seller.html'">
+onclick="location='services.html'">
 
 ⬅ Back
 
@@ -340,16 +338,11 @@ outAddrEnglish.innerText=addrEnglish.value.toUpperCase();
 
 let d=dob.value;
 
-let dobText="";
-let yob="";
-
 if(d){
 
 let p=d.split("-");
 
-dobText=p[2]+"/"+p[1]+"/"+p[0];
-
-yob=p[0];
+let dobText=p[2]+"/"+p[1]+"/"+p[0];
 
 outDob.innerHTML="जन्म तिथि/DOB: "+dobText;
 
@@ -380,7 +373,7 @@ r.readAsDataURL(file);
 
 }
 
-document.getElementById("qrcode").innerHTML="";
+qrcode.innerHTML="";
 
 new QRCode(qrcode,{
 text:nameEnglish.value,
@@ -402,7 +395,9 @@ import {
 getFirestore,
 doc,
 getDoc,
-updateDoc
+updateDoc,
+addDoc,
+collection
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -415,14 +410,26 @@ projectId:"printportal-36ae0"
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
-window.downloadPDF=function(){
+window.downloadPDF = async function(){
+
+let sellerId = localStorage.currentSeller;
+
+const ref = doc(db,"seller",sellerId);
+const snap = await getDoc(ref);
+let data = snap.data();
+
+let balance = data.balance || 0;
+
+if(balance < 2){
+alert("Insufficient Balance");
+return;
+}
 
 html2canvas(card,{
 scale:6,
 useCORS:true,
 allowTaint:true
 })
-
 .then(async function(canvas){
 
 var pdf=new jspdf.jsPDF('landscape','px',[canvas.width,canvas.height]);
@@ -441,19 +448,28 @@ if(name=="") name="AADHAAR";
 
 pdf.save(name+".pdf");
 
-/* FIREBASE COUNT */
-
-let id=localStorage.currentSeller;
-
-const ref=doc(db,"seller",id);
-
-const snap=await getDoc(ref);
-
-let data=snap.data();
+/* WALLET UPDATE */
 
 await updateDoc(ref,{
+balance:balance-2,
 pdf:(data.pdf||0)+1
 });
+
+/* TRANSACTION ENTRY */
+
+await addDoc(collection(db,"transactions"),{
+
+seller:sellerId,
+type:"Debit",
+amount:2,
+status:"Completed",
+message:"Aadhaar Print",
+utr:"-",
+time:new Date().toISOString()
+
+});
+
+alert("₹2 Deducted For Aadhaar Print");
 
 });
 
