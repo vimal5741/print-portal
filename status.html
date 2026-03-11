@@ -69,17 +69,9 @@ background:rgba(255,255,255,0.1);
 border-radius:10px;
 }
 
-.done{
-color:#00ff88;
-}
-
-.wait{
-color:orange;
-}
-
-.fail{
-color:red;
-}
+.done{color:#00ff88;}
+.wait{color:orange;}
+.fail{color:red;}
 
 .msg{
 margin-top:15px;
@@ -111,7 +103,10 @@ Application Status
 Secure Print Portal
 </div>
 
-<input id="user" placeholder="Username">
+<input id="user" 
+placeholder="Username"
+oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9]/g,'')">
+
 <input id="mobile" placeholder="Mobile Number">
 
 <button onclick="checkStatus()">
@@ -128,26 +123,24 @@ Back to Login
 </div>
 
 
-
 <script type="module">
 
-import { initializeApp }
+import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
 import {
 getFirestore,
 collection,
-getDocs
+getDocs,
+doc,
+updateDoc
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-
 const firebaseConfig={
-
 apiKey:"AIzaSyB6iuJiQANc5DIon2ulq8NAtj6SPWT--sY",
 authDomain:"printportal-36ae0.firebaseapp.com",
 projectId:"printportal-36ae0"
-
 };
 
 const app=initializeApp(firebaseConfig);
@@ -156,29 +149,58 @@ const db=getFirestore(app);
 
 window.checkStatus=async function(){
 
-let u=user.value.trim();
+let u=user.value.trim().toLowerCase();
 let m=mobile.value.trim();
 
 if(u=="" || m==""){
-
 alert("Enter Username & Mobile");
 return;
+}
+
+/* CHECK SELLER COLLECTION */
+
+const sellerSnap=await getDocs(collection(db,"seller"));
+
+let found=null;
+let status="";
+let docId=null;
+
+sellerSnap.forEach((d)=>{
+
+let s=d.data();
+
+if(s.user==u && s.mobile==m){
+
+found=s;
+status="approved";
 
 }
 
-const snap=await getDocs(collection(db,"registration"));
+});
 
-let found=null;
 
-snap.forEach((d)=>{
+/* IF NOT FOUND CHECK REGISTRATION */
+
+if(!found){
+
+const regSnap=await getDocs(collection(db,"registration"));
+
+regSnap.forEach((d)=>{
 
 let r=d.data();
 
 if(r.user==u && r.mobile==m){
+
 found=r;
+status=r.status;
+docId=d.id;
+
 }
 
 });
+
+}
+
 
 if(!found){
 
@@ -187,43 +209,55 @@ return;
 
 }
 
-/* TIME LOGIC */
 
-let now=Date.now();
-let diff=(now-found.time)/60000;
+/* STATUS ALREADY VIEWED */
+
+if(found.seen==true){
+
+result.innerHTML="<div class='msg'>Status already checked. Please register again.</div>";
+return;
+
+}
+
+
+/* TIMELINE */
 
 let step1="done";
 let step2="done";
 let step3="wait";
 let step4="wait";
 
-if(diff>5){
-step3="done";
+if(status=="pending"){
+step3="wait";
 }
 
-if(found.status=="approved"){
+if(status=="approved"){
+step3="done";
 step4="done";
 }
 
-if(found.status=="rejected"){
+if(status=="rejected"){
+step3="done";
 step4="fail";
 }
+
 
 /* MESSAGE */
 
 let msg="";
 
-if(found.status=="approved"){
-msg=found.message || "Your account has been approved. You can login now.";
+if(status=="approved"){
+msg="Welcome! Your account has been approved. You can login now.";
 }
 
-if(found.status=="rejected"){
-msg=found.message || "Your registration was rejected.";
+if(status=="rejected"){
+msg=found.reason || "Your registration was rejected.";
 }
 
-if(found.status=="pending"){
+if(status=="pending"){
 msg="Your request is being processed.";
 }
+
 
 /* UI */
 
@@ -245,7 +279,7 @@ result.innerHTML=
 </div>
 
 <div class="step ${step4}">
-${found.status=="rejected"?"❌ Rejected":"✔ Approved"}
+${status=="rejected"?"❌ Rejected":"✔ Approved"}
 </div>
 
 </div>
@@ -255,6 +289,19 @@ ${msg}
 </div>
 
 `;
+
+
+/* MARK VIEWED */
+
+if(status!="pending" && docId){
+
+await updateDoc(doc(db,"registration",docId),{
+
+seen:true
+
+});
+
+}
 
 }
 
