@@ -2,50 +2,81 @@
 <html>
 <head>
 
-<title>Maintenance</title>
+<title>Print Portal Maintenance</title>
 <meta name="viewport" content="width=device-width">
 
 <style>
 
 body{
 margin:0;
-font-family:Arial;
-background:linear-gradient(140deg,#020024,#090979,#00d4ff);
+font-family:Arial,Helvetica,sans-serif;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+background:linear-gradient(135deg,#020024,#090979,#00d4ff);
 color:white;
 text-align:center;
 }
 
+/* CARD */
+
 .box{
-background:rgba(0,0,0,0.5);
-padding:40px;
+background:rgba(0,0,0,0.55);
+padding:45px;
 border-radius:20px;
-width:380px;
+width:400px;
+box-shadow:0 0 40px rgba(0,0,0,0.4);
 }
 
+/* TITLE */
+
 .title{
-font-size:32px;
+font-size:34px;
 font-weight:bold;
 margin-bottom:10px;
 }
 
-.sub{
+/* PORTAL NAME */
+
+.portal{
 font-size:18px;
 color:#ddd;
-margin-bottom:15px;
+margin-bottom:25px;
 }
 
-.icon{
-font-size:70px;
-margin-bottom:15px;
+/* LOADER */
+
+.loader{
+margin:25px auto;
+width:60px;
+height:60px;
+border-radius:50%;
+border:6px solid rgba(255,255,255,0.3);
+border-top:6px solid #00ffd5;
+animation:spin 1s linear infinite;
 }
+
+@keyframes spin{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+}
+
+/* MESSAGE */
 
 .msg{
-font-size:16px;
+font-size:17px;
+line-height:1.6;
 color:#eee;
+margin-top:10px;
+}
+
+/* REFRESH */
+
+.refresh{
+margin-top:20px;
+font-size:14px;
+color:#ccc;
 }
 
 </style>
@@ -56,24 +87,36 @@ color:#eee;
 
 <div class="box">
 
-<div class="icon">
-⚙️
-</div>
-
 <div class="title">
-Site Under Maintenance
+⚙️ Under Maintenance
 </div>
 
-<div class="sub">
+<div class="portal">
 Secure Print Portal
 </div>
 
+<div class="loader"></div>
+
 <div class="msg">
-We are currently updating the system.<br>
-Please check back later.
+We are currently upgrading the system<br>
+to improve performance and security.
+<br><br>
+Please check back shortly.
+</div>
+
+<div class="refresh">
+Page will refresh automatically...
 </div>
 
 </div>
+
+<script>
+
+setTimeout(function(){
+location.reload();
+},30000);
+
+</script>
 
 </body>
 </html>
