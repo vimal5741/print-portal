@@ -1,6 +1,12 @@
-<!DOCTYPE html><html>
-<head><title>Print Portal Register</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"><style>
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Print Portal Register</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
 
 body{
 margin:0;
@@ -14,8 +20,6 @@ color:white;
 padding:20px;
 }
 
-/* BOX */
-
 .box{
 width:90%;
 max-width:380px;
@@ -25,8 +29,6 @@ border-radius:20px;
 position:relative;
 box-shadow:0px 0px 25px rgba(0,0,0,0.6);
 }
-
-/* BACK */
 
 .back{
 position:absolute;
@@ -41,8 +43,6 @@ color:#ddd;
 color:white;
 }
 
-/* TITLE */
-
 .title{
 font-size:30px;
 text-align:center;
@@ -55,8 +55,6 @@ margin-bottom:15px;
 color:#ddd;
 }
 
-/* INPUT */
-
 input{
 width:100%;
 padding:12px;
@@ -66,7 +64,11 @@ border:none;
 font-size:15px;
 }
 
-/* PASSWORD */
+.userMsg{
+font-size:13px;
+margin-top:-4px;
+margin-bottom:6px;
+}
 
 .passBox{
 position:relative;
@@ -79,8 +81,6 @@ top:14px;
 cursor:pointer;
 color:black;
 }
-
-/* ROLE */
 
 .role{
 display:flex;
@@ -103,8 +103,6 @@ font-size:15px;
 background:#00cc99 !important;
 }
 
-/* REGISTER BUTTON */
-
 .register{
 width:100%;
 padding:13px;
@@ -122,8 +120,6 @@ box-shadow:0px 0px 15px rgba(0,0,0,0.5);
 opacity:.9;
 }
 
-/* LOGIN LINK */
-
 .loginLink{
 text-align:center;
 margin-top:10px;
@@ -136,29 +132,82 @@ font-size:14px;
 color:white;
 }
 
-</style></head><body><div class="box"><div class="back" onclick="location='index.html'">
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="back" onclick="location='index.html'">
 ⬅ Back to Login
-</div><div class="title">
+</div>
+
+<div class="title">
 WELCOME
-</div><div class="sub">
+</div>
+
+<div class="sub">
 Secure Print Portal
-</div><input id="name" placeholder="Full Name"><input id="user" placeholder="Username"><input id="mobile" placeholder="Mobile Number"><div class="passBox">
+</div>
+
+<input id="user"
+placeholder="Username"
+oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9]/g,'');checkUsername()">
+
+<div id="userMsg" class="userMsg"></div>
+
+<input id="mobile"
+placeholder="Mobile Number"
+maxlength="10"
+inputmode="numeric"
+pattern="[0-9]*"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+
+<div class="passBox">
+
 <input id="pass" type="password" placeholder="Password">
+
 <span class="eye" onclick="showPass('pass')">👁</span>
-</div><div class="passBox">
+
+</div>
+
+<div class="passBox">
+
 <input id="pass2" type="password" placeholder="Confirm Password">
+
 <span class="eye" onclick="showPass('pass2')">👁</span>
-</div><div class="role"><button id="seller" onclick="setRole('seller')">
+
+</div>
+
+<div class="role">
+
+<button id="seller" onclick="setRole('seller')">
 Seller
-</button><button id="admin" onclick="setRole('admin')">
+</button>
+
+<button id="admin" onclick="setRole('admin')">
 Admin
-</button><button id="master" onclick="setRole('master')">
+</button>
+
+<button id="master" onclick="setRole('master')">
 Master
-</button></div><button class="register" onclick="registerUser()">
+</button>
+
+</div>
+
+<button class="register" onclick="registerUser()">
 Register
-</button><div class="loginLink" onclick="location='index.html'">
+</button>
+
+<div class="loginLink" onclick="location='index.html'">
 Back to Login
-</div></div><script type="module">
+</div>
+
+</div>
+
+<script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
@@ -166,7 +215,10 @@ from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import {
 getFirestore,
 collection,
-addDoc
+addDoc,
+getDocs,
+updateDoc,
+doc
 }
 from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -180,6 +232,7 @@ const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
 let role="";
+let usernameAvailable=true;
 
 /* ROLE SELECT */
 
@@ -187,9 +240,9 @@ window.setRole=function(r){
 
 role=r;
 
-document.getElementById("seller").classList.remove("active");
-document.getElementById("admin").classList.remove("active");
-document.getElementById("master").classList.remove("active");
+seller.classList.remove("active");
+admin.classList.remove("active");
+master.classList.remove("active");
 
 document.getElementById(r).classList.add("active");
 
@@ -199,51 +252,159 @@ alert("Master Panel Coming Soon");
 
 }
 
-/* REGISTER */
+/* LIVE USERNAME CHECK */
+
+window.checkUsername=async function(){
+
+let u=user.value.trim().toLowerCase();
+
+if(u.length<3){
+
+userMsg.innerText="Minimum 3 characters required";
+userMsg.style.color="orange";
+usernameAvailable=false;
+return;
+
+}
+
+let taken=false;
+
+/* CHECK SELLER */
+
+const sellerSnap=await getDocs(collection(db,"seller"));
+
+sellerSnap.forEach((d)=>{
+if(d.data().user==u){
+taken=true;
+}
+});
+
+/* CHECK REGISTRATION */
+
+const regSnap=await getDocs(collection(db,"registration"));
+
+regSnap.forEach((d)=>{
+
+let r=d.data();
+
+if(r.user==u && r.status!="rejected"){
+taken=true;
+}
+
+});
+
+if(taken){
+
+userMsg.innerText="❌ Username already taken";
+userMsg.style.color="red";
+usernameAvailable=false;
+
+}else{
+
+userMsg.innerText="✔ Username available";
+userMsg.style.color="#00ff88";
+usernameAvailable=true;
+
+}
+
+}
+
+/* REGISTER USER */
 
 window.registerUser=async function(){
 
-let n=document.getElementById("name").value || "";
-let u=document.getElementById("user").value || "";
-let m=document.getElementById("mobile").value || "";
-let p=document.getElementById("pass").value || "";
-let p2=document.getElementById("pass2").value || "";
+let u=user.value.trim().toLowerCase();
+let m=mobile.value.trim();
+let p=pass.value.trim();
+let p2=pass2.value.trim();
 
-n=n.trim();
-u=u.trim();
-m=m.trim();
-p=p.trim();
-p2=p2.trim();
-
-if(n==""||u==""||m==""||p==""||p2==""||role==""){
-
+if(u==""||m==""||p==""||p2==""||role==""){
 alert("Fill All Fields");
 return;
+}
 
+if(!usernameAvailable){
+alert("Please choose another username");
+return;
 }
 
 if(p!=p2){
-
 alert("Password Not Match");
 return;
+}
 
+if(m.length!=10){
+alert("Enter Valid 10 Digit Mobile Number");
+return;
 }
 
 if(role=="master"){
-
 alert("Master Panel Coming Soon");
+return;
+}
+
+/* CHECK EXISTING USER */
+
+const snap=await getDocs(collection(db,"registration"));
+
+let existingUser=null;
+let docId=null;
+
+snap.forEach((d)=>{
+
+let r=d.data();
+
+if(r.user==u){
+existingUser=r;
+docId=d.id;
+}
+
+});
+
+if(existingUser){
+
+if(existingUser.status=="approved"){
+alert("Username already exists");
+return;
+}
+
+if(existingUser.status=="pending"){
+alert("Your request is already under review");
+return;
+}
+
+if(existingUser.status=="rejected"){
+
+await updateDoc(doc(db,"registration",docId),{
+
+status:"pending",
+reason:"",
+time:Date.now(),
+seen:false
+
+});
+
+alert("Application submitted again");
+
+location="index.html";
+
 return;
 
 }
 
+}
+
+/* SAVE NEW REGISTRATION */
+
 await addDoc(collection(db,"registration"),{
 
-name:n,
 user:u,
 mobile:m,
 pass:p,
 role:role,
 status:"pending",
+reason:"",
+seen:false,
 time:Date.now()
 
 });
@@ -254,7 +415,9 @@ location="index.html";
 
 }
 
-</script><script>
+</script>
+
+<script>
 
 function showPass(id){
 
@@ -267,5 +430,7 @@ x.type="password";
 
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
