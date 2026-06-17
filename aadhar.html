@@ -132,31 +132,13 @@ top:0;
 z-index:1;
 }
 
-/* BOXES */
 
-.box{position:absolute;top:12mm;left:28mm;width:32mm;height:10mm;background:white;z-index:2;}
-.box2{position:absolute;top:11mm;left:5mm;width:2.5mm;height:26.7mm;background:white;z-index:2;}
-.box3{position:absolute;top:44mm;left:17mm;width:40mm;height:5mm;background:white;z-index:2;}
-.box4{position:absolute;top:10mm;right:82.9mm;width:1.8mm;height:26mm;background:white;z-index:2;}
-.box5{position:absolute;top:12mm;right:38mm;width:45mm;height:10mm;background:white;z-index:2;}
-.box6{position:absolute;bottom:18.5mm;right:37.5mm;width:45mm;height:10mm;background:white;z-index:2;}
-.box7{position:absolute;bottom:4.8mm;right:20mm;width:50mm;height:7mm;background:white;z-index:2;}
-
-.box8{
-position:absolute;
-top:11mm;
-right:4.2mm;
-width:29mm;
-height:30mm;
-background:white;
-z-index:2;
-}
 
 /* PHOTO */
 
 .photo{
 position:absolute;
-top:12mm;
+top:11.5mm;
 left:8.2mm;
 width:17.5mm;
 height:21mm;
@@ -166,31 +148,31 @@ z-index:3;
 
 /* TEXT */
 
-.hindi{position:absolute;top:12.3mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.english{position:absolute;top:14.6mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.dob{position:absolute;top:17.2mm;left:28.7mm;font-size:4.5pt;z-index:3;}
-.gender{position:absolute;top:19.5mm;left:28.7mm;font-size:4.5pt;z-index:3;}
+.hindi{position:absolute;top:12.3mm;left:28.6mm;font-size:4.5pt;z-index:3;}
+.english{position:absolute;top:15.7mm;left:28.6mm;font-size:4.5pt;z-index:3;}
+.dob{position:absolute;top:18.8mm;left:28.6mm;font-size:4.5pt;z-index:3;}
+.gender{position:absolute;top:22mm;left:28.6mm;font-size:4.5pt;z-index:3;}
 
 .addrHindi{
 position:absolute;
-top:12mm;
-left:88.8mm;
+top:13.8mm;
+left:91.3mm;
 font-size:4.5pt;
 width:35mm;
 white-space:pre-line;
-line-height:8pt;
+line-height:5.5pt;
 text-align:left;
 z-index:3;
 }
 
 .addrEnglish{
 position:absolute;
-top:25.1mm;
-left:89mm;
+top:23.5mm;
+left:91.3mm;
 font-size:4.5pt;
 width:35mm;
 white-space:pre-line;
-line-height:8pt;
+line-height:5.5pt;
 text-align:left;
 z-index:3;
 }
@@ -199,8 +181,8 @@ z-index:3;
 
 .number{
 position:absolute;
-top:45.3mm;
-left:27mm;
+top:45mm;
+left:28mm;
 font-family:"Times New Roman";
 font-size:11pt;
 font-weight:bold;
@@ -209,8 +191,8 @@ z-index:3;
 
 .number2{
 position:absolute;
-top:45.3mm;
-right:25.7mm;
+top:45mm;
+right:30.8mm;
 font-family:"Times New Roman";
 font-size:11pt;
 font-weight:bold;
@@ -221,8 +203,8 @@ z-index:3;
 
 .qr{
 position:absolute;
-top:13mm;
-right:6mm;
+top:12.8mm;
+right:5mm;
 z-index:3;
 }
 
@@ -267,8 +249,8 @@ PRINT PORTAL Aadhaar Editor
 
 <select id="gender">
 
-<option>MALE / पुरुष</option>
-<option>FEMALE / महिला</option>
+<option>पुरुष / MALE</option>
+<option>महिला / FEMALE </option>
 
 </select>
 
@@ -294,16 +276,9 @@ PRINT PORTAL Aadhaar Editor
 
 <img class="bg"
 crossorigin="anonymous"
-src="https://upload.wikimedia.org/wikipedia/commons/1/15/Specimen_of_an_Aadhaar_Card_2024.png">
+src="https://raw.githubusercontent.com/vimal5741/print-portal/refs/heads/main/aadhar_temp.jpg">
 
-<div class="box"></div>
-<div class="box2"></div>
-<div class="box3"></div>
-<div class="box4"></div>
-<div class="box5"></div>
-<div class="box6"></div>
-<div class="box7"></div>
-<div class="box8"></div>
+
 
 <img id="outPhoto" class="photo">
 
@@ -375,10 +350,16 @@ r.readAsDataURL(file);
 
 qrcode.innerHTML="";
 
+let qrData =
+nameEnglish.value + "|" +
+dob.value + "|" +
+aadhaar.value + "|" +
+addrEnglish.value.substring(0,200);
+
 new QRCode(qrcode,{
-text:nameEnglish.value,
-width:qrSize,
-height:qrSize
+text:qrData,
+width:100,
+height:100
 });
 
 }
